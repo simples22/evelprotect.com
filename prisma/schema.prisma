@@ -1,0 +1,386 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model NewsArticle {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  body        String?
+  imageUrl    String?
+  category    String?
+
+  introTitle       String?
+  introduction     String?
+
+  authorTitle      String?
+  authorFunction   String?
+  authorCompany    String?
+  authorBio        String?
+  authorImageUrl   String?
+
+  approachTitle    String?
+  approachBody     String?
+  sourceLabel      String?
+  sourceUrl        String?
+
+  conclusionTitle  String?
+  conclusionBody   String?
+
+  isPublished Boolean   @default(false)
+  isFeatured  Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  source       String?
+  isActive     Boolean  @default(true)
+  isRead       Boolean  @default(false)
+  subscribedAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([isRead])
+  @@index([subscribedAt])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  fullName  String?
+  email     String?
+  phone     String?
+  subject   String?
+  message   String
+  isRead    Boolean  @default(false)
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model ContactRequest {
+  id          String   @id @default(cuid())
+
+  fullName    String
+  email       String
+  phone       String?
+  country     String?
+  city        String?
+  company     String?
+  service     String?
+  subject     String?
+  message     String
+
+  type        String   @default("CONTACT")
+  status      String   @default("NEW")
+  isRead      Boolean  @default(false)
+  adminNotes  String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JobApplication {
+  id               String   @id @default(cuid())
+
+  fullName         String
+  email            String
+  phone            String?
+  city             String?
+  country          String?
+  address          String?
+
+  linkedinUrl      String?
+  portfolioUrl     String?
+
+  position         String
+  department       String?
+  employmentType   String?
+  workMode         String?
+
+  availability     String?
+  salaryExpected   String?
+
+  resumeUrl        String?
+  coverLetter      String?
+  portfolioFileUrl String?
+  extraDocumentUrl String?
+
+  experienceYears  Int?
+  currentCompany   String?
+  currentRole      String?
+  skills           String?
+  languages        String?
+
+  whyJoin          String?
+  whyGoodCandidate String?
+  workedInIndustry String?
+  authorizedWork   Boolean?
+  needSponsorship  Boolean?
+
+  consent          Boolean  @default(false)
+
+  status           String   @default("NEW")
+  isRead           Boolean  @default(false)
+  adminNotes       String?
+  candidateScore   Int?
+  tags             String?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  fullName  String
+  role      String
+  bio       String?
+  imageUrl  String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id                String   @id @default(cuid())
+
+  title             String
+  slug              String   @unique
+  category          String
+  subCategory       String?
+
+  shortDescription  String?
+  description       String?
+  packDescription   String?
+  ingredientsText   String?
+
+  price             Float
+  compareAtPrice    Float?
+  currency          String   @default("USD")
+
+  sizeValue         Float?
+  sizeUnit          String?
+  packSize          Int      @default(1)
+  pricePerBottle    Float?
+
+  image1            String
+  image2            String?
+  image3            String?
+  image4            String?
+
+  tags              String?
+  rating            Float    @default(0)
+  ratingCount       Int      @default(0)
+
+  isPublished       Boolean  @default(false)
+  isFeatured        Boolean  @default(false)
+  isBestSeller      Boolean  @default(false)
+
+  viewCount         Int      @default(0)
+  clickCount        Int      @default(0)
+
+  status            String   @default("DRAFT")
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  reviews ProductReview[]
+}
+
+
+model SustainabilityPost {
+  id          String   @id @default(cuid())
+
+  title       String
+  slug        String   @unique
+  category    String?
+  excerpt     String?
+  heroImage   String?
+
+  introTitle  String?
+  introText   String?
+  introImage  String?
+
+  document1Title String?
+  document1Url   String?
+  document2Title String?
+  document2Url   String?
+  document3Title String?
+  document3Url   String?
+
+  insight1 String?
+  insight2 String?
+  insight3 String?
+  insight4 String?
+  insight5 String?
+  insight6 String?
+  insight7 String?
+  insight8 String?
+  insight9 String?
+  insight10 String?
+
+  section1Title String?
+  section1Text  String?
+
+  section2Title String?
+  section2Text  String?
+
+  card1Title String?
+  card1Text  String?
+  card2Title String?
+  card2Text  String?
+  card3Title String?
+  card3Text  String?
+
+  conclusion String?
+
+  section3Title String?
+  section3Text  String?
+  section3Image String?
+
+  section4Title String?
+  section4Text  String?
+  section4Image String?
+
+  section5Title String?
+  section5Text  String?
+  section5Image String?
+
+  fixedBgImage String?
+
+  source1 String?
+  source2 String?
+  source3 String?
+  source4 String?
+  source5 String?
+  source6 String?
+  source7 String?
+  source8 String?
+  source9 String?
+  source10 String?
+
+  isPublished Boolean @default(false)
+  isFeatured  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model ProductReview {
+  id        String   @id @default(cuid())
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  rating    Int
+  name      String?
+  message   String?
+
+  createdAt DateTime @default(now())
+}
+
+model AdminSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MarketingAudience {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  source      String   // newsletter | contact | custom | mixed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members MarketingAudienceMember[]
+}
+
+model MarketingAudienceMember {
+  id         String   @id @default(cuid())
+  audienceId String
+  email      String
+  fullName   String?
+  phone      String?
+  source     String?  // newsletter | contact | manual
+  sourceId   String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  audience MarketingAudience @relation(fields: [audienceId], references: [id], onDelete: Cascade)
+
+  @@unique([audienceId, email])
+}
+
+model MarketingCampaign {
+  id          String   @id @default(cuid())
+  title       String
+  subject     String
+  previewText String?
+  bodyHtml    String
+  bodyText    String?
+  heroImage   String?
+  ctaLabel    String?
+  builderJson String?
+  ctaUrl      String?
+  audience    String   // newsletter | contacts | all | custom
+  status      String   @default("draft") // draft | scheduled | sent
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  logs MarketingEmailLog[]
+}
+
+model MarketingEmailLog {
+  id          String   @id @default(cuid())
+  campaignId  String?
+  recipient   String
+  fullName    String?
+  subject     String
+  bodyHtml    String
+  status      String   @default("sent") // sent | failed
+  source      String?  // newsletter | contact | manual
+  error       String?
+  openedAt     DateTime?
+  clickedAt    DateTime?
+  unsubscribed Boolean  @default(false)
+  sentAt      DateTime @default(now())
+
+  campaign MarketingCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+}
+
+
+model MarketingVideo {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  videoUrl    String
+  thumbnail   String?
+  productName String?
+  category    String?
+  isPublished Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
