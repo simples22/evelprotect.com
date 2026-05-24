@@ -3,25 +3,42 @@ import prisma from "@/lib/prisma";
 
 export async function PATCH(req, { params }) {
   try {
+    const { id } = await params;
     const body = await req.json();
 
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Missing application id." },
+        { status: 400 }
+      );
+    }
+
     const item = await prisma.jobApplication.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: body.status,
-        isRead: body.isRead,
-        adminNotes: body.adminNotes,
-        candidateScore: body.candidateScore
-          ? Number(body.candidateScore)
-          : null,
-        tags: body.tags,
+        isRead: Boolean(body.isRead),
+        adminNotes: body.adminNotes || "",
+        candidateScore:
+          body.candidateScore !== undefined &&
+          body.candidateScore !== null &&
+          body.candidateScore !== ""
+            ? Number(body.candidateScore)
+            : null,
+        tags: body.tags || "",
       },
     });
 
     return NextResponse.json({ success: true, item });
   } catch (error) {
+    console.error("PATCH /api/admin/applications/[id] error:", error);
+
     return NextResponse.json(
-      { success: false, message: "Failed to update application." },
+      {
+        success: false,
+        message: "Failed to update application.",
+        error: error.message,
+      },
       { status: 500 }
     );
   }
@@ -29,14 +46,29 @@ export async function PATCH(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Missing application id." },
+        { status: 400 }
+      );
+    }
+
     await prisma.jobApplication.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("DELETE /api/admin/applications/[id] error:", error);
+
     return NextResponse.json(
-      { success: false, message: "Failed to delete application." },
+      {
+        success: false,
+        message: "Failed to delete application.",
+        error: error.message,
+      },
       { status: 500 }
     );
   }
