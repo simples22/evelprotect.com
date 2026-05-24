@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function PATCH(req, { params }) {
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+export async function PATCH(req, context) {
   try {
-    const { id } = await params;
-    const body = await req.json();
+    const params = await context.params;
+    const id = params?.id;
 
     if (!id) {
       return NextResponse.json(
@@ -13,10 +16,12 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    const body = await req.json();
+
     const item = await prisma.jobApplication.update({
       where: { id },
       data: {
-        status: body.status,
+        status: body.status || "NEW",
         isRead: Boolean(body.isRead),
         adminNotes: body.adminNotes || "",
         candidateScore:
@@ -44,9 +49,10 @@ export async function PATCH(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
   try {
-    const { id } = await params;
+    const params = await context.params;
+    const id = params?.id;
 
     if (!id) {
       return NextResponse.json(
