@@ -90,7 +90,7 @@ export async function POST(req) {
       size: file.size,
     });
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("UPLOAD FULL ERROR:", JSON.stringify(error, null, 2));
 
     return NextResponse.json(
       {
