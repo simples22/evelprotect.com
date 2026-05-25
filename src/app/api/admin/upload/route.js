@@ -38,10 +38,14 @@ function getFolder(type = "") {
 
 export async function POST(req) {
   try {
+    console.log("=== UPLOAD STARTED ===");
+
     const formData = await req.formData();
     const file = formData.get("file");
 
     if (!file) {
+      console.error("No file received.");
+
       return NextResponse.json(
         {
           success: false,
@@ -51,7 +55,15 @@ export async function POST(req) {
       );
     }
 
+    console.log("FILE INFO:", {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    });
+
     if (!allowedTypes.includes(file.type)) {
+      console.error("Blocked file type:", file.type);
+
       return NextResponse.json(
         {
           success: false,
@@ -62,6 +74,8 @@ export async function POST(req) {
     }
 
     if (file.size > MAX_SIZE) {
+      console.error("File too large:", file.size);
+
       return NextResponse.json(
         {
           success: false,
@@ -77,10 +91,14 @@ export async function POST(req) {
       .toString(36)
       .slice(2)}-${safeName(file.name)}`;
 
+    console.log("Uploading to Blob:", filename);
+
     const blob = await put(filename, file, {
       access: "public",
       addRandomSuffix: false,
     });
+
+    console.log("UPLOAD SUCCESS:", blob.url);
 
     return NextResponse.json({
       success: true,
@@ -90,13 +108,16 @@ export async function POST(req) {
       size: file.size,
     });
   } catch (error) {
-    console.error("UPLOAD FULL ERROR:", JSON.stringify(error, null, 2));
+    console.error("=== UPLOAD FAILED ===");
+    console.error(error);
+    console.error("MESSAGE:", error?.message);
+    console.error("STACK:", error?.stack);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Upload failed, Please try again.",
-        error: error.message,
+        message: "Upload failed. Please try again.",
+        error: String(error?.message || error),
       },
       { status: 500 }
     );
