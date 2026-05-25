@@ -313,12 +313,12 @@ select:focus-visible{
 
   :root{
 
-    --text-xs:.75rem;
-    --text-sm:.875rem;
-    --text-md:1.125rem;
+    --text-xs:.85rem;
+    --text-sm:.975rem;
+    --text-md:1.25rem;
 
-    --text-lg:clamp(1.05rem, 2vw, 1.1rem);
-    --text-xl:clamp(1.35rem, 3vw, 1.7rem);
+    --text-lg:clamp(1.35rem, 2vw, 1.40rem);
+    --text-xl:clamp(1.60rem, 3vw, 1.7rem);
     --text-xxl:clamp(1.7rem, 5vw, 2.5rem);
 
     --text-hero:clamp(2rem, 6vw, 4.2rem);
