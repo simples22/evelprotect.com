@@ -162,13 +162,11 @@ h5,
 h6{
   margin:0;
 
-  color:var(--text);
-
+  color:var(--evel-blue-dark);
   font-family:var(--font-title);
   font-weight:var(--font-weight-title);
 
   line-height:var(--lh-tight);
-
   text-decoration:none;
   letter-spacing:var(--space-xs);
 
@@ -252,7 +250,7 @@ select:focus-visible{
 /* GLOBAL ALIGNMENT */
 :root{
   --container-max:112em;
-  --container-padding:2.75em;
+  --container-padding:1.75em;
   --container-width:calc(100% - 5em);
   --container-width-large:calc(100% - 7em);
   --container-mobile:calc(100% - 2.7em);
@@ -317,8 +315,8 @@ select:focus-visible{
     --text-sm:.975rem;
     --text-md:1.25rem;
 
-    --text-lg:clamp(1.35rem, 2vw, 1.40rem);
-    --text-xl:clamp(1.60rem, 3vw, 1.7rem);
+    --text-lg:clamp(1.65rem, 2vw, 1.80rem);
+    --text-xl:clamp(1.90rem, 3vw, 2rem);
     --text-xxl:clamp(1.7rem, 5vw, 2.5rem);
 
     --text-hero:clamp(2rem, 6vw, 4.2rem);
