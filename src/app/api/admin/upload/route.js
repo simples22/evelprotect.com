@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-const MAX_SIZE = 80 * 1024 * 1024; // 80MB
+const MAX_SIZE = 100 * 1024 * 1024; // 100MB
 
 const allowedTypes = [
   "image/jpeg",
@@ -43,7 +43,10 @@ export async function POST(req) {
 
     if (!file) {
       return NextResponse.json(
-        { success: false, message: "No file uploaded." },
+        {
+          success: false,
+          message: "No file uploaded.",
+        },
         { status: 400 }
       );
     }
@@ -62,31 +65,27 @@ export async function POST(req) {
       return NextResponse.json(
         {
           success: false,
-          message: "File is too large. Max allowed is 80MB.",
+          message: "File is too large. Max allowed is 100MB.",
         },
         { status: 400 }
       );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
     const folder = getFolder(file.type);
-    const uploadDir = path.join(process.cwd(), "public", "uploads", folder);
 
-    await mkdir(uploadDir, { recursive: true });
-
-    const filename = `${Date.now()}-${Math.random()
+    const filename = `${folder}/${Date.now()}-${Math.random()
       .toString(36)
       .slice(2)}-${safeName(file.name)}`;
 
-    const filepath = path.join(uploadDir, filename);
-
-    await writeFile(filepath, buffer);
+    const blob = await put(filename, file, {
+      access: "public",
+      addRandomSuffix: false,
+    });
 
     return NextResponse.json({
       success: true,
-      url: `/uploads/${folder}/${filename}`,
+      url: blob.url,
+      pathname: blob.pathname,
       type: file.type,
       size: file.size,
     });
@@ -96,7 +95,7 @@ export async function POST(req) {
     return NextResponse.json(
       {
         success: false,
-        message: "Upload failed.",
+        message: "Upload failed, Please try again.",
         error: error.message,
       },
       { status: 500 }
