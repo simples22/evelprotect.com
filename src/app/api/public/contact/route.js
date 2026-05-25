@@ -1,36 +1,73 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+function clean(value) {
+  if (typeof value !== "string") return null;
+
+  const trimmed = value.trim();
+
+  return trimmed.length ? trimmed : null;
+}
+
 export async function POST(req) {
   try {
     const body = await req.json();
 
-    if (!body.fullName || !body.email || !body.message) {
+    const fullName = clean(body.fullName);
+    const email = clean(body.email);
+    const message = clean(body.message);
+
+    if (!fullName || !email || !message) {
       return NextResponse.json(
-        { success: false, message: "Missing required fields." },
+        {
+          success: false,
+          message:
+            "Full name, email and message are required.",
+        },
         { status: 400 }
       );
     }
 
     const item = await prisma.contactRequest.create({
       data: {
-        fullName: body.fullName,
-        email: body.email,
-        phone: body.phone || null,
-        country: body.country || null,
-        city: body.city || null,
-        company: body.company || null,
-        service: body.service || null,
-        subject: body.subject || null,
-        message: body.message,
+        fullName,
+        email,
+
+        phone: clean(body.phone),
+        country: clean(body.country),
+        city: clean(body.city),
+
+        company: clean(body.company),
+        service: clean(body.service),
+        subject: clean(body.subject),
+
+        message,
+
         type: "CONTACT",
+
+        isRead: false,
       },
     });
 
-    return NextResponse.json({ success: true, item });
+    return NextResponse.json({
+      success: true,
+      item,
+    });
   } catch (error) {
+    console.error("PUBLIC CONTACT API ERROR:", error);
+
     return NextResponse.json(
-      { success: false, message: "Contact request failed." },
+      {
+        success: false,
+        message: "Contact request failed.",
+        error:
+          process.env.NODE_ENV === "development"
+            ? error.message
+            : undefined,
+      },
       { status: 500 }
     );
   }
