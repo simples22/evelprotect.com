@@ -83,7 +83,7 @@
 
   --text-xs:.75rem;
   --text-sm:1.45rem;
-  --text-md:1.75rem;
+  --text-md:1.55rem;
 
   --text-lg:clamp(1.75rem, 2vw, 1.99rem) !important;
   --text-xl:clamp(1.99rem, 3vw, 2.3rem);
