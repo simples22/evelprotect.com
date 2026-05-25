@@ -82,8 +82,8 @@
   --font-title:var(--font-inter), Arial, sans-serif;
 
   --text-xs:.75rem;
-  --text-sm:1.175rem;
-  --text-md:1.45rem;
+  --text-sm:1.45rem;
+  --text-md:1.75rem;
 
   --text-lg:clamp(1.75rem, 2vw, 2.3rem) !important;
   --text-xl:clamp(2.55rem, 3vw, 2.7rem);
