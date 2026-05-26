@@ -5,39 +5,73 @@ import AdminTable from "@/components/admin/ui/AdminTable";
 
 export default function AdminContactRequests() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   async function loadItems() {
-    const res = await fetch("/api/admin/contact-requests", {
-      cache: "no-store",
-    });
+    try {
+      setLoading(true);
 
-    const data = await res.json();
+      const res = await fetch("/api/admin/contacts-requests", {
+        method: "GET",
+        cache: "no-store",
+      });
 
-    if (data.success) {
-      setItems(data.items);
+      const data = await res.json();
+
+      if (data.success) {
+        setItems(data.items || []);
+      } else {
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Failed to load contact requests:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
   async function updateItem(id, payload) {
-    await fetch(`/api/admin/contact-requests/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(`/api/admin/contacts-requests/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    loadItems();
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.message || "Unable to update request.");
+        return;
+      }
+
+      await loadItems();
+    } catch (error) {
+      console.error("Update failed:", error);
+    }
   }
 
   async function deleteItem(id) {
     if (!confirm("Delete this contact request?")) return;
 
-    await fetch(`/api/admin/contact-requests/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/admin/contacts-requests/${id}`, {
+        method: "DELETE",
+      });
 
-    loadItems();
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.message || "Unable to delete request.");
+        return;
+      }
+
+      await loadItems();
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
   }
 
   useEffect(() => {
@@ -45,36 +79,45 @@ export default function AdminContactRequests() {
   }, []);
 
   return (
-    <main className="adminPage">
+    <main className="adminPage evelAdminPage">
       <AdminTable
         title="Contact Requests"
         description="Manage public contact messages sent to EVEL™ Cosmetics Group."
         data={items}
-        emptyText="No contact requests found."
+        emptyText={
+          loading
+            ? "Loading contact requests..."
+            : "No contact requests found."
+        }
         columns={[
           {
             key: "fullName",
             label: "Name",
           },
+
           {
             key: "email",
             label: "Email",
           },
+
           {
             key: "country",
             label: "Country",
             render: (row) => row.country || "—",
           },
+
           {
             key: "company",
             label: "Company",
             render: (row) => row.company || "—",
           },
+
           {
             key: "subject",
             label: "Subject",
             render: (row) => row.subject || "—",
           },
+
           {
             key: "message",
             label: "Message",
@@ -84,20 +127,34 @@ export default function AdminContactRequests() {
               </span>
             ),
           },
+
           {
             key: "status",
             label: "Status",
             render: (row) => (
-              <span className={`adminStatus adminStatus${row.status}`}>
-                {row.status}
+              <span
+                className={`adminStatus adminStatus${
+                  row.status || "NEW"
+                }`}
+              >
+                {row.status || "NEW"}
               </span>
             ),
+          },
+
+          {
+            key: "createdAt",
+            label: "Date",
+            render: (row) =>
+              row.createdAt
+                ? new Date(row.createdAt).toLocaleDateString()
+                : "—",
           },
         ]}
         actions={(row) => (
           <>
             <select
-              value={row.status}
+              value={row.status || "NEW"}
               onChange={(e) =>
                 updateItem(row.id, {
                   status: e.target.value,
@@ -123,6 +180,7 @@ export default function AdminContactRequests() {
 
             <button
               type="button"
+              className="adminBtnDanger"
               onClick={() => deleteItem(row.id)}
             >
               Delete
