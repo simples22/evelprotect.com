@@ -1,20 +1,22 @@
+import Link from "next/link";
+import EvelCardGrid from "@/components/publics/ui/EvelCardGrid";
 import NewsCard from "./NewsCard";
 
-export default function NewsGrid({ items = [] }) {
+export default function NewsGrid({ items = [], columns = "2" }) {
   if (!items.length) {
     return (
-      <div className="publicNewsEmpty">
+      <div className="evelContentEmpty">
         No news articles available yet.
-        <a href="#newsletter-signup"> Sign Up to Join newsletter</a>
+        <Link href="#newsletter-signup"> Sign Up to Join newsletter</Link>
       </div>
     );
   }
 
   return (
-    <div className="publicNewsGrid">
+    <EvelCardGrid className="newsContentGrid" columns={columns}>
       {items.map((item) => (
         <NewsCard item={item} key={item.id} />
       ))}
-    </div>
+    </EvelCardGrid>
   );
 }

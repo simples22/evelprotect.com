@@ -1,27 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useMemo, useState } from "react";
 
 import NewsGrid from "./NewsGrid";
-import NewsFilters from "./NewsFilters";
-import UILine from "@/components/admin/ui/UILine";
+
+import EvelButton from "@/components/publics/ui/EvelButton";
+import EvelContentLayout from "@/components/publics/ui/EvelContentLayout";
+import EvelFilter from "@/components/publics/ui/EvelFilter";
+import EvelSearchBar from "@/components/publics/ui/EvelSearchBar";
+
+const initialFilters = {
+  page: 1,
+  limit: 6,
+
+  search: "",
+
+  sort: "latest",
+
+  category: "all",
+  type: [],
+  topic: [],
+  period: "",
+
+  from: "",
+  to: "",
+};
 
 export default function NewsCenter() {
-  const [filters, setFilters] = useState({
-    page: 1,
-    limit: 6,
-    search: "",
-    from: "",
-    to: "",
-    types: [],
-    sort: "latest",
-  });
+  const [filters, setFilters] = useState(initialFilters);
 
   const [data, setData] = useState({
     items: [],
@@ -31,121 +37,209 @@ export default function NewsCenter() {
 
   const [loading, setLoading] = useState(false);
 
+  const filterSections = useMemo(
+    () => [
+      {
+        key: "sort",
+        label: "Published",
+        type: "radio",
+        filterKey: "sort",
+        options: [
+          { label: "Latest newest", value: "latest" },
+          { label: "Oldest", value: "oldest" },
+          { label: "Most viewed", value: "views" },
+        ],
+      },
+
+      {
+        key: "category",
+        label: "Category",
+        type: "select",
+        filterKey: "category",
+        options: [
+          { label: "All categories", value: "all" },
+          { label: "Business", value: "Business" },
+          { label: "Products", value: "Products" },
+          { label: "Company", value: "Company" },
+          { label: "Marketing", value: "Marketing" },
+          { label: "Sustainability", value: "Sustainability" },
+          { label: "Operations", value: "Operations" },
+        ],
+      },
+
+      {
+        key: "topics",
+        label: "Topics",
+        type: "checkbox",
+        filterKey: "topic",
+        options: [
+          { label: "Freshness", value: "Freshness" },
+          { label: "Body care", value: "Body care" },
+          { label: "Hair care", value: "Hair care" },
+          { label: "Skin care", value: "Skin care" },
+          { label: "Cosmetics", value: "Cosmetics" },
+          { label: "Wellness", value: "Wellness" },
+          { label: "Innovation", value: "Innovation" },
+          { label: "Global", value: "Global" },
+        ],
+      },
+
+      {
+        key: "period",
+        label: "Period",
+        type: "period",
+        fromKey: "from",
+        toKey: "to",
+        inputType: "month",
+      },
+    ],
+    []
+  );
+
+  const queryString = useMemo(() => {
+    const params = new URLSearchParams({
+      page: String(filters.page),
+      limit: String(filters.limit),
+      sort: filters.sort,
+    });
+
+    if (filters.search) {
+      params.set("search", filters.search);
+    }
+
+    if (filters.category !== "all") {
+      params.set("category", filters.category);
+    }
+
+    if (filters.from) {
+      params.set("from", `${filters.from}-01`);
+    }
+
+    if (filters.to) {
+      params.set("to", `${filters.to}-31`);
+    }
+
+    if (filters.topic.length) {
+      params.set("topics", filters.topic.join(","));
+    }
+
+    return params.toString();
+  }, [filters]);
+
   useEffect(() => {
     async function loadNews() {
       setLoading(true);
 
-      const params = new URLSearchParams({
-        page: String(filters.page),
-        limit: String(filters.limit),
-        sort: filters.sort,
-      });
-
-      if (filters.search) params.set("search", filters.search);
-      if (filters.from) params.set("from", `${filters.from}-01`);
-      if (filters.to) params.set("to", `${filters.to}-28`);
-      if (filters.types.length) params.set("types", filters.types.join(","));
-
-      const res = await fetch(`/api/public/news?${params.toString()}`);
-      const json = await res.json();
-
-      if (json.success) {
-        setData({
-          items: json.items,
-          totalPages: json.totalPages,
-          total: json.total,
+      try {
+        const res = await fetch(`/api/public/news?${queryString}`, {
+          cache: "no-store",
         });
-      }
 
-      setLoading(false);
+        const json = await res.json();
+
+        if (json.success) {
+          setData({
+            items: json.items || [],
+            totalPages: json.totalPages || 1,
+            total: json.total || 0,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
 
     loadNews();
-  }, [filters]);
+  }, [queryString]);
 
   return (
     <section className="newsCenterSection">
       <div className="evelContainer">
-        <div className="newsSearchTop">
-          <label>Search by</label>
+        <EvelSearchBar
+          label="Search by"
+          value={filters.search}
+          placeholder="Search news, products, sustainability, operations..."
+          onChange={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              page: 1,
+              search: value,
+            }))
+          }
+          onClear={() =>
+            setFilters((prev) => ({
+              ...prev,
+              page: 1,
+              search: "",
+            }))
+          }
+        />
 
-          <div className="newsSearchTopBox">
-            <input
-              value={filters.search}
-              onChange={(e) =>
+        <EvelContentLayout
+          topbar={
+            <p>
+              Showing {data.items.length} of {data.total} news
+              {loading && <span> Loading...</span>}
+            </p>
+          }
+          filter={
+            <EvelFilter
+              title="News Filters"
+              filters={filters}
+              setFilters={setFilters}
+              resetValues={initialFilters}
+              sections={filterSections}
+              stats={[
+                {
+                  label: "Articles",
+                  value: data.total,
+                },
+                {
+                  label: "Showing",
+                  value: data.items.length,
+                },
+              ]}
+            />
+          }
+        >
+          <NewsGrid items={data.items} columns="2" />
+
+          <div className="evelContentPagination">
+            <EvelButton
+              variant="nav"
+              direction="left"
+              disabled={filters.page <= 1}
+              onClick={() =>
                 setFilters((prev) => ({
                   ...prev,
-                  page: 1,
-                  search: e.target.value,
+                  page: prev.page - 1,
                 }))
               }
-              placeholder="Search news..."
-            />
+            >
+              Previous
+            </EvelButton>
 
-            {filters.search && (
-              <button
-                type="button"
-                onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    page: 1,
-                    search: "",
-                  }))
-                }
-                aria-label="Clear search"
-              >
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
-            )}
+            <span>
+              Page {filters.page} of {data.totalPages}
+            </span>
+
+            <EvelButton
+              variant="nav"
+              direction="right"
+              disabled={filters.page >= data.totalPages}
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: prev.page + 1,
+                }))
+              }
+            >
+              Next
+            </EvelButton>
           </div>
-        </div>
-<UILine />
-        <div className="newsCenterLayout">
-          <div className="newsCenterMain">
-            <div className="newsCenterMeta">
-              <div className="newsCenterMetaText">
-                <span>{data.total} results</span>
-                {loading && <span>Loading...</span>}
-              </div>
-
-              <NewsFilters filters={filters} setFilters={setFilters} />
-            </div>
-
-            <NewsGrid items={data.items} />
-
-            <div className="newsPagination">
-              <button
-                type="button"
-                disabled={filters.page <= 1}
-                onClick={() =>
-                  setFilters((prev) => ({ ...prev, page: prev.page - 1 }))
-                }
-                aria-label="Previous page"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-
-              <span>
-                Page {filters.page} of {data.totalPages}
-              </span>
-
-              <button
-                type="button"
-                disabled={filters.page >= data.totalPages}
-                onClick={() =>
-                  setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
-                }
-                aria-label="Next page"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
-            </div>
-          </div>
-
-          <div className="newsCenterSidebar">
-            <NewsFilters filters={filters} setFilters={setFilters} />
-          </div>
-        </div>
+        </EvelContentLayout>
       </div>
     </section>
   );

@@ -13,7 +13,6 @@ export default function FAQPage() {
   return (
     <main className="evelFaqPage">
       <FAQHero />
-      <FAQSection />
       <FAQSection limit={999} showViewAll={false} />
     </main>
   );

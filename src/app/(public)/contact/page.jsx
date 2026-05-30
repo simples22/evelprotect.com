@@ -2,6 +2,7 @@ import EvelContactForms from "@/components/publics/contacts/EvelContactForms";
 
 import EvelContactMain from "@/components/publics/contacts/EvelContactMain";
 import ContactHero from "@/components/publics/company/ContactHero";
+import ContactAdress from "@/components/publics/contacts/ContactAdress";
 
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function OurProductsPage() {
       <ContactHero />
 
       <EvelContactMain />
+      <ContactAdress />
     </main>
   );
 }

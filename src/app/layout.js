@@ -7,6 +7,12 @@ export const metadata = {
     "EVEL Cosmetics Group is a modern cosmetics company preparing to launch beauty, skincare, fragrance, deodorant, body care, and personal care products.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable} data-scroll-behavior="smooth">

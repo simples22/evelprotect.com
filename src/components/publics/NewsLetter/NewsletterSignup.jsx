@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import PBImage from "@/components/PBImage";
+import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function NewsletterSignup({
   id = "newsletter-signup",
@@ -107,6 +109,9 @@ export default function NewsletterSignup({
 
             <button type="submit" disabled={loading || !accepted}>
               {loading ? "PLEASE WAIT..." : "SIGN ME UP"}
+              <span className="evelBtnArrow">
+                <FontAwesomeIcon icon={faArrowRightLong} />
+              </span>
             </button>
           </form>
 

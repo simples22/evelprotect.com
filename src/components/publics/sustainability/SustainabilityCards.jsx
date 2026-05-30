@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import EvelCard from "@/components/publics/ui/EvelCard";
+import EvelCardGrid from "@/components/publics/ui/EvelCardGrid";
 
 export default function SustainabilityCards({
   posts = [],
@@ -19,48 +19,27 @@ export default function SustainabilityCards({
           <p>{subtitle}</p>
         </div>
 
-        <div className="evelSustainabilityCardsGrid">
+        <EvelCardGrid
+          className="evelSustainabilityCardsGrid"
+          columns="3"
+        >
           {posts.map((post) => (
-            <Link
-              href={`/sustainability/${post.slug}`}
-              className="evelSustainabilityCard"
+            <EvelCard
               key={post.id}
-            >
-              {/* IMAGE TOP */}
-
-              <div className="evelSustainabilityCardMedia">
-                <Image
-                  src={
-                    post.heroImage ||
-                    "/images/products/about-products.jpg"
-                  }
-                  alt={post.title}
-                  fill
-                  sizes="(max-width:768px) 100vw, 25vw"
-                  className="evelSustainabilityCardImg"
-                />
-              </div>
-
-              {/* CONTENT BOTTOM */}
-
-              <div className="evelSustainabilityCardContent">
-                <span className="evelSustainabilityCardCategory">
-                  {post.category || "Company Topic"}
-                </span>
-
-                <h3>{post.title}</h3>
-
-                {post.excerpt && (
-                  <p>{post.excerpt}</p>
-                )}
-
-                <strong className="evelSustainabilityCardLink">
-                  Read more →
-                </strong>
-              </div>
-            </Link>
+              type="sustainability"
+              title={post.title}
+              excerpt={post.excerpt}
+              image={
+                post.heroImage ||
+                "/images/products/about-products.jpg"
+              }
+              href={`/sustainability/${post.slug}`}
+              category={post.category || "Company Topic"}
+              cta="Read more"
+              size="md"
+            />
           ))}
-        </div>
+        </EvelCardGrid>
       </div>
     </section>
   );

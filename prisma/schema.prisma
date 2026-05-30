@@ -151,6 +151,23 @@ model TeamMember {
   updatedAt DateTime @updatedAt
 }
 
+
+model BusinessOverview {
+  id                String   @id @default(cuid())
+  title             String
+  description       String?
+  currentYear       Int
+  currentUnitsSold  Int      @default(0)
+  currentRevenueUsd Float    @default(0)
+  previousYear      Int
+  previousChangePct Float    @default(0)
+  previousUnitsSold Int      @default(0)
+  previousRevenueUsd Float   @default(0)
+  isPublished       Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
 model Product {
   id                String   @id @default(cuid())
 
@@ -380,4 +397,36 @@ model MarketingVideo {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+model LeadershipMember {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  functionTitle   String
+  displayOrder    Int       @default(0)
+
+  positions       Json?
+
+  linkedinUrl     String?
+  facebookUrl     String?
+  instagramUrl    String?
+  xUrl            String?
+
+  division        String?
+  imageUrl        String?
+  heroDescription String?
+  bio             String?
+  careerSummary   String?
+  formationOne    String?
+  formationTwo    String?
+  joinedAt        DateTime?
+  bioFileUrl      String?
+
+  isPublished     Boolean   @default(false)
+  isFeatured      Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

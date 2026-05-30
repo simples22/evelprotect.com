@@ -4,59 +4,51 @@ import PBVideo from "@/components/PBVideo";
 
 export default function HeroCompany({
   title = "Built For Long-Term Growth",
-
-  subtitle =
-    "Evel Protect™ develops a modern beauty and personal care direction focused on consumer trust and long-term product identity.",
-
-  image = "/images/company/company-hero.jpg",
-
-  video,
-
+  subtitle = "",
+  image = "",
+  video = "",
   breadcrumbs = [
-  { label: "Home", href: "/" },
-  { label: "Our Company" },
-],
-
+    { label: "Home", href: "/" },
+    { label: "Our Company" },
+  ],
   className = "",
   mediaClassName = "isMd",
 }) {
+  const hasSubtitle = Boolean(subtitle);
+  const hasMedia = Boolean(video || image);
+
   return (
-    <section className={`companyHero ${className}`}>
+    <section
+      className={[
+        "companyHero",
+        !hasMedia ? "hasNoMedia" : "",
+        !hasSubtitle ? "hasNoSubtitle" : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className="companyHeroOverlay" />
 
       <div className="evelContainer companyHeroTop">
         {breadcrumbs.length > 0 && (
-          <nav
-            className="companyHeroBreadcrumb"
-            aria-label="Breadcrumb"
-          >
+          <nav className="companyHeroBreadcrumb" aria-label="Breadcrumb">
             <ol>
               {breadcrumbs.map((item, index) => {
-                const isLast =
-                  index === breadcrumbs.length - 1;
+                const isLast = index === breadcrumbs.length - 1;
 
                 return (
-                  <li
-                    key={`${item.label}-${index}`}
-                  >
+                  <li key={`${item.label}-${index}`}>
                     {item.href && !isLast ? (
-                      <Link href={item.href}>
-                        {item.label}
-                      </Link>
+                      <Link href={item.href}>{item.label}</Link>
                     ) : (
-                      <span
-                        aria-current={
-                          isLast ? "page" : undefined
-                        }
-                      >
+                      <span aria-current={isLast ? "page" : undefined}>
                         {item.label}
                       </span>
                     )}
 
                     {!isLast && (
-                      <span className="companyHeroSeparator">
-                        /
-                      </span>
+                      <span className="companyHeroSeparator">/</span>
                     )}
                   </li>
                 );
@@ -70,28 +62,25 @@ export default function HeroCompany({
         <div className="companyHeroContent">
           <h1>{title}</h1>
 
-          <p>{subtitle}</p>
+          {hasSubtitle && <p>{subtitle}</p>}
         </div>
 
-        <div
-        className={`companyHeroMedia ${mediaClassName}`}
-               >
-          {video ? (
-            <PBVideo
-              src={video}
-              className="companyHeroVideo"
-            />
-          ) : (
-            <PBImage
-              src={image}
-              alt={title}
-              width={1200}
-              height={1200}
-              priority
-              className="companyHeroImage"
-            />
-          )}
-        </div>
+        {hasMedia && (
+          <div className={`companyHeroMedia ${mediaClassName}`}>
+            {video ? (
+              <PBVideo src={video} className="companyHeroVideo" />
+            ) : (
+              <PBImage
+                src={image}
+                alt={title}
+                width={1200}
+                height={1200}
+                priority
+                className="companyHeroImage"
+              />
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

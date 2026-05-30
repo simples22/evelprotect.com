@@ -17,16 +17,22 @@ function formatDate(date) {
 }
 
 async function getArticle(slug) {
-  return prisma.newsArticle.findFirst({
-    where: {
-      slug,
-      isPublished: true,
-    },
-  });
+  try {
+    return await prisma.newsArticle.findFirst({
+      where: {
+        slug,
+        isPublished: true,
+      },
+    });
+  } catch (error) {
+    console.error("News detail query failed:", error);
+    return null;
+  }
 }
 
 export async function generateMetadata({ params }) {
-  const article = await getArticle(params.slug);
+  const { slug } = await params;
+  const article = await getArticle(slug);
 
   return {
     title: article
@@ -37,7 +43,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function NewsDetailPage({ params }) {
-  const article = await getArticle(params.slug);
+  const { slug } = await params;
+  const article = await getArticle(slug);
 
   if (!article) notFound();
 
@@ -58,9 +65,7 @@ export default async function NewsDetailPage({ params }) {
               </li>
 
               <li>
-                <span aria-current="page">
-                  {article.title}
-                </span>
+                <span aria-current="page">{article.title}</span>
               </li>
             </ol>
           </nav>
@@ -82,7 +87,11 @@ export default async function NewsDetailPage({ params }) {
 
           <div className="newsReadIntro">
             <h1>{article.title}</h1>
-            <span>Published: {formatDate(article.publishedAt || article.createdAt)}</span>
+
+            <span>
+              Published: {formatDate(article.publishedAt || article.createdAt)}
+            </span>
+
             {article.excerpt && <p>{article.excerpt}</p>}
           </div>
         </div>
@@ -108,7 +117,9 @@ export default async function NewsDetailPage({ params }) {
             </section>
           )}
 
-          {(article.authorTitle || article.authorBio || article.authorImageUrl) && (
+          {(article.authorTitle ||
+            article.authorBio ||
+            article.authorImageUrl) && (
             <section className="newsReadAuthor">
               {article.authorImageUrl && (
                 <div className="newsReadAuthorImgWrap">
@@ -128,7 +139,9 @@ export default async function NewsDetailPage({ params }) {
                 {(article.authorFunction || article.authorCompany) && (
                   <strong>
                     {article.authorFunction}
-                    {article.authorCompany ? ` · ${article.authorCompany}` : ""}
+                    {article.authorCompany
+                      ? ` · ${article.authorCompany}`
+                      : ""}
                   </strong>
                 )}
 
@@ -171,6 +184,7 @@ export default async function NewsDetailPage({ params }) {
           )}
         </div>
       </section>
+
       <NewsletterSignup />
     </main>
   );

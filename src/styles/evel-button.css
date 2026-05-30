@@ -1,0 +1,267 @@
+/* =========================
+   EVEL UNIVERSAL BUTTONS
+========================= */
+
+.evelBtnWrap{
+  width:100%;
+  display:flex;
+  margin-top:1.4em;
+}
+
+.evelBtnWrap.is-left{
+  justify-content:flex-start;
+}
+
+.evelBtnWrap.is-center{
+  justify-content:center;
+}
+
+.evelBtnWrap.is-right{
+  justify-content:flex-end;
+}
+
+.evelBtnWrap.is-full .evelBtn{
+  width:100%;
+}
+
+/* BUTTON */
+
+.evelBtn{
+  width:auto;
+  min-width:max-content;
+  min-height:3em;
+
+  padding:0 1.3em;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.65em;
+
+  border:1px solid transparent;
+  cursor:pointer;
+
+  font-size:var(--text-md);
+  font-weight:var(--font-weight-title);
+  line-height:1;
+
+  text-decoration:none;
+  white-space:nowrap;
+
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.evelBtn:hover{
+  transform:translateY(-1px);
+}
+
+.evelBtn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+
+/* ICON */
+
+.evelBtnIcon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+
+/* PRIMARY */
+
+.evelBtn.is-primary{
+  background:var(--evel-blue-dark);
+  color:var(--white);
+  border-radius:var(--border-radius-btn-left);
+}
+
+.evelBtn.is-primary:hover{
+  background:var(--evel-blue);
+}
+
+/* SECONDARY */
+
+.evelBtn.is-secondary{
+  background:transparent;
+  color:var(--evel-blue-dark);
+  border-color:var(--line-green);
+  border-radius:var(--border-radius-btn-left);
+}
+
+/* GHOST */
+
+.evelBtn.is-ghost{
+  background:transparent;
+  color:var(--evel-blue-dark);
+  padding-inline:0;
+  border:0;
+  text-decoration:underline;
+}
+
+/* VIEW ALL */
+
+.evelBtn.is-viewall{
+  background:transparent;
+  color:var(--evel-blue-dark);
+  border:0;
+  border-radius:var(--border-radius-btn-left);
+  padding-inline:0;
+  text-decoration:underline;
+}
+
+/* PREVIOUS / NEXT */
+
+.evelBtn.is-nav{
+  width:auto;
+  min-width:3em;
+  height:3em;
+
+  padding:0 1em;
+
+  border-radius:var(--border-radius-btn-left);
+
+  background:var(--white-soft);
+  border-color:var(--line-green);
+
+  color:var(--evel-blue-dark);
+}
+
+/* PLAY */
+
+.evelBtn.is-play{
+  width:auto;
+  min-width:3.2em;
+  height:3.2em;
+
+  padding:0 1em;
+
+  border-radius:var(--border-radius-btn-left);
+
+  background:var(--evel-blue-dark);
+  color:var(--white);
+
+  font-size:1em;
+}
+
+/* CLOSE */
+
+.evelBtn.is-close{
+  width:auto;
+  min-width:2.8em;
+  height:2.8em;
+
+  padding:0 .9em;
+
+  border-radius:var(--border-radius-btn-left);
+
+  background:#ffffffd8;
+  color:var(--evel-blue-dark);
+}
+
+/* SIGNUP */
+
+.evelBtn.is-signup{
+  background:var(--evel-blue-gradient);
+  color:var(--white);
+  border-radius:var(--border-radius-btn-left);
+}
+
+/* TRACKED CTA */
+
+.evelBtn.is-tracked{
+  background:var(--evel-blue-original);
+  color:var(--white);
+  border-radius:var(--border-radius-btn-left);
+}
+
+/* FILTER */
+
+.evelBtn.is-filter{
+  width:100%;
+
+  justify-content:space-between;
+
+  background:var(--evel-blue-dark);
+  color:var(--white);
+
+  border-radius:var(--border-radius-btn-left);
+}
+
+/* SIZES */
+
+.evelBtn.is-sm{
+  min-height:2.55em;
+  padding:0 1em;
+  font-size:var(--text-sm);
+}
+
+.evelBtn.is-md{
+  min-height:3em;
+}
+
+.evelBtn.is-lg{
+  min-height:3.35em;
+  padding:0 1.5em;
+  font-size:var(--text-lg);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .evelBtn{
+    font-size:var(--text-md);
+  }
+
+  .evelBtn.is-lg{
+    min-height:3.1em;
+    font-size:var(--text-md);
+  }
+
+  .evelBtn.is-nav{
+    min-width:2.9em;
+    height:2.9em;
+  }
+
+  .evelBtn.is-play{
+    min-width:3em;
+    height:3em;
+  }
+
+  .evelBtn.is-filter{
+    width:100%;
+  }
+}
+
+
+
+
+
+
+
+/* =========================
+   NAV DIRECTIONS
+========================= */
+
+.evelBtn.is-nav.is-left{
+  border-radius:
+    var(--border-radius-btn-left)
+    0
+    0
+    var(--border-radius-btn-left);
+}
+
+.evelBtn.is-nav.is-right{
+  border-radius:
+    0
+    var(--border-radius-btn-left)
+    var(--border-radius-btn-left)
+    0;
+}

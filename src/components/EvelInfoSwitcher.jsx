@@ -32,7 +32,6 @@ export default function EvelInfoSwitcher() {
     <section className="evelInfoSwitcher" id="evel-cosmetics">
       <div className="evelContainer">
         <div className="evelInfoSwitcherIntro">
-          <span>Our Companies business</span>
 
           <h2>We build global brands by creative care attention.</h2>
 

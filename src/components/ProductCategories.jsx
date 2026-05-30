@@ -43,7 +43,6 @@ export default function ProductCategories() {
     <section className="evelProductCategories" id="products">
       <div className="evelContainer">
         <div className="evelProductCategoriesHead">
-          <span>Our Porducts Categories</span>
           <h2>Product Categories</h2>
           <p>
             Explore our developing cosmetics, face care, body care, and hair

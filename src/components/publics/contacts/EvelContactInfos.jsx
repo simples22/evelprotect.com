@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import UILine from "@/components/admin/ui/UILine";
 
 const items = [
   {
@@ -37,11 +38,11 @@ const items = [
   },
 
   {
-    title: "evel™ Registered Address",
+    title: "Evel™ Registered Address",
     content: (
       <p>
-        evel™ Cosmetics Companies <br />
-        234 Miami Evel <br />
+        Evel Protect™ Companies <br />
+        234 Miami Evel Coral <br />
         Stermond Street Building, FL, USA
       </p>
     ),
@@ -61,11 +62,11 @@ const items = [
           </Link>
 
           <Link href="/#contacts">
-            Buy on evel-store.com ↗
+            Buy on evel-store.com 
           </Link>
 
           <Link href="/#contacts">
-            Buy on amazone.com ↗
+            Buy on amazone.com 
           </Link>
         </div>
       </>
@@ -79,8 +80,10 @@ export default function EvelContactInfos() {
   return (
     <aside className="evelContactInfos">
       <h2>
-        Explore Our Support Service
+        Explore Our Support
       </h2>
+
+      <UILine />
 
       {items.map((item, index) => {
         const alwaysOpen = index < 3;
