@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import EvelCarousel from "@/components/publics/ui/EvelCarousel";
 import PBImage from "./PBImage";
 
 const items = [
@@ -25,60 +23,32 @@ const items = [
 ];
 
 export default function EvelInfoSwitcher() {
-  const [active, setActive] = useState(0);
-  const current = items[active];
-
   return (
-    <section className="evelInfoSwitcher" id="evel-cosmetics">
-      <div className="evelContainer">
-        <div className="evelInfoSwitcherIntro">
+    <EvelCarousel
+      title="We build global brands by Categories care attention."
+      className="is-info-switcher"
+    >
+      {items.map((item) => (
+        <article className="evelCarouselSlide" key={item.label}>
+          <div className="evelInfoCarouselCard">
+            <div className="evelInfoCarouselMedia">
+              <PBImage
+                src={item.image}
+                alt={item.title}
+                fill
+                sizes="(max-width:768px) 86vw, 33vw"
+                className="evelInfoCarouselImg"
+              />
+            </div>
 
-          <h2>We build global brands by creative care attention.</h2>
-
-          <p>Designed for everyday consumer lifestyles.</p>
-        </div>
-
-        <div className="EvelSwitchBtn">
-          <div className="evelInfoSwitcherButtons">
-            {items.map((item, index) => (
-              <button
-                key={item.label}
-                type="button"
-                className={active === index ? "isActive" : ""}
-                onClick={() => setActive(index)}
-              >
-                {item.label}
-              </button>
-            ))}
+            <div className="evelInfoCarouselBody">
+              <span>{item.label}</span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <article className="evelInfoPanel">
-        <div className="evelInfoPanelMedia">
-          <PBImage
-            src={current.image}
-            alt={current.title}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 60vw"
-            className="evelInfoPanelImg"
-          />
-        </div>
-
-        <div className="evelInfoPanelOverlay" />
-
-        <div className="evelContainer evelInfoPanelInner">
-          <div className="evelInfoPanelContent">
-            <span>{current.label}</span>
-
-            <h2>{current.title}</h2>
-
-
-            <p>{current.text}</p>
-          </div>
-        </div>
-      </article>
-    </section>
+        </article>
+      ))}
+    </EvelCarousel>
   );
 }

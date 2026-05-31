@@ -7,7 +7,6 @@ import EvelCarouselSlide from "@/components/publics/ui/EvelCarouselSlide";
 
 export default function NewsCarousel({
   title = "Latest News",
-  subtitle = "Explore the latest company updates, product news, and Evel Protect™ announcements.",
   news = [],
 }) {
   const latestNews = useMemo(() => {
@@ -24,9 +23,7 @@ export default function NewsCarousel({
 
   return (
     <EvelCarousel
-      eyebrow="News"
       title={title}
-      subtitle={subtitle}
       viewAllHref="/news"
       className="is-news"
     >

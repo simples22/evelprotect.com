@@ -12,7 +12,10 @@ import {
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightLong,
+  faArrowUpRightFromSquare,
+} from "@fortawesome/free-solid-svg-icons";
 
 const footerGroups = [
   {
@@ -26,7 +29,6 @@ const footerGroups = [
       { label: "News", href: "/news" },
     ],
   },
-
   {
     title: "Products",
     links: [
@@ -37,7 +39,6 @@ const footerGroups = [
       { label: "Hair Care", href: "/shop?category=Hair" },
     ],
   },
-
   {
     title: "Responsibility",
     links: [
@@ -47,7 +48,6 @@ const footerGroups = [
       { label: "Contact", href: "/contact" },
     ],
   },
-
   {
     title: "Legal",
     links: [
@@ -62,31 +62,21 @@ const footerGroups = [
 
 export default function Footer() {
   const [openGroup, setOpenGroup] = useState(null);
-
-  const currentYear = useMemo(
-    () => new Date().getFullYear(),
-    []
-  );
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   function toggleGroup(title) {
-    setOpenGroup((prev) =>
-      prev === title ? null : title
-    );
+    setOpenGroup((prev) => (prev === title ? null : title));
   }
 
   return (
     <footer className="evelFooter">
       <div className="evelContainer">
-
-        {/* TOP */}
-
         <div className="evelFooterTop">
           <div className="evelFooterBrand">
             <p>
-              Evel Protect™ is a personal care company
-              focused on everyday consumer wellness,
-              beauty, personal care innovation, and
-              long-term brand development.
+              Evel Protect™ is a personal care company focused on everyday
+              consumer wellness, beauty, personal care innovation, and long-term
+              brand development.
             </p>
           </div>
 
@@ -94,88 +84,62 @@ export default function Footer() {
             <span>Follow us</span>
 
             <div className="evelFooterSocial">
-              <a
-                href="#"
-                aria-label="Instagram"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href="#" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
 
-              <a
-                href="#"
-                aria-label="Facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href="#" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faFacebook} />
               </a>
 
-              <a
-                href="#"
-                aria-label="TikTok"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href="#" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faTiktok} />
               </a>
 
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faLinkedin} />
               </a>
             </div>
           </div>
         </div>
 
-        {/* GRID */}
-
         <div className="evelFooterGrid">
           {footerGroups.map((group) => {
-            const isOpen =
-              openGroup === group.title;
+            const isOpen = openGroup === group.title;
 
             return (
               <div
-                className={`evelFooterCol ${
-                  isOpen ? "isOpen" : ""
-                }`}
+                className={`evelFooterCol ${isOpen ? "isOpen" : ""}`}
                 key={group.title}
               >
                 <button
                   type="button"
                   className="evelFooterAccordionBtn"
-                  onClick={() =>
-                    toggleGroup(group.title)
-                  }
+                  onClick={() => toggleGroup(group.title)}
                   aria-expanded={isOpen}
                 >
                   <span>{group.title}</span>
 
-                  <strong>
-                    {isOpen ? "−" : "+"}
-                  </strong>
+                  <FontAwesomeIcon
+                    icon={faArrowRightLong}
+                    className={`evelFooterAccordionIcon ${
+                      isOpen ? "isOpen" : ""
+                    }`}
+                  />
                 </button>
 
                 <h4>{group.title}</h4>
 
                 <div className="evelFooterLinks">
                   <div className="evelFooterLinksInner">
-                    {group.links.map(
-                      (link, index) => (
-                        <Link
-                          href={link.href}
-                          key={`${group.title}-${link.href}-${index}`}
-                        >
-                          {link.label}
-                        </Link>
-                      )
-                    )}
+                    {group.links.map((link, index) => (
+                      <Link
+                        href={link.href}
+                        key={`${group.title}-${link.href}-${index}`}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -183,57 +147,60 @@ export default function Footer() {
           })}
         </div>
 
-        {/* CONTACT BAND */}
-
         <div className="evelFooterContactBand">
           <div>
             <span>Business Contact</span>
 
             <p>
-              For supplier inquiries,
-              manufacturing discussions,
-              partnerships, investment
-              opportunities, or general company
-              information, contact Evel Protect™
-              through our official communication
-              channels.
+              For supplier inquiries, manufacturing discussions, partnerships,
+              investment opportunities, or general company information, contact
+              Evel Protect™ through our official communication channels.
             </p>
           </div>
 
-          <Link
-            href="/contact"
-            className="evelFooterContactBtn"
-          >
+          <Link href="/contact" className="evelFooterContactBtn">
             <span>Contact Us</span>
-
-            <FontAwesomeIcon
-              icon={faArrowRightLong}
-            />
+            <FontAwesomeIcon icon={faArrowRightLong} />
           </Link>
+        </div>
+
+        <div className="evelFooterPrivacyChoices">
+             <Link href="/consumer-data-policy">
+            <span>Consumer Data Policy</span>
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          </Link>
+
+          <Link href="/privacy-choices">
+            <span>Your Privacy Choices Access</span>
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          </Link>
+
+          <p>
+            Do Not Sell or Share My Personal Information · Opt-Out of Targeted
+            Advertising
+          </p>
+
+          <p> <strong>NOTICE:</strong>We may sell your sensitive personal data.</p>
+
         </div>
       </div>
 
-      {/* BOTTOM */}
-
       <div className="evelFooterBottom">
         <div className="evelContainer evelFooterBottomInner">
-          <p>
-            © {currentYear} Evel Protect™.
-            All rights reserved.
-          </p>
+          <p>© {currentYear} Evel Protect™. All rights reserved.</p>
 
           <div className="evelFooterBottomLinks">
             <Link href="/privacy-policy">
-              Privacy
+              <span>Privacy</span>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </Link>
 
             <Link href="/terms-of-use">
-              Terms
+              <span>Terms</span>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </Link>
 
-            <Link href="/contact">
-              Contact
-            </Link>
+            <Link href="/contact">Contact</Link>
           </div>
         </div>
       </div>

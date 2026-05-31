@@ -1,7 +1,10 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightLong,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function EvelSearchBar({
   label = "Search by",
@@ -27,7 +30,9 @@ export default function EvelSearchBar({
           onClick={() => (value ? onClear?.() : null)}
           aria-label={value ? "Clear search" : "Search"}
         >
-          <FontAwesomeIcon icon={value ? faXmark : faMagnifyingGlass} />
+          <FontAwesomeIcon
+            icon={value ? faXmark : faArrowRightLong}
+            />
         </button>
       </div>
     </div>

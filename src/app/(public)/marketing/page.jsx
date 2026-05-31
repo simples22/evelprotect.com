@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import MarketingVideoCard from "@/components/publics/marketing/MarketingVideoCard";
 import MarketingHero from "@/components/publics/company/MarketingHero";
+import EvelButton from "@/components/publics/ui/EvelButton";
 
 const PAGE_SIZE = 12;
 
@@ -70,13 +71,35 @@ export default async function MarketingPage({ searchParams }) {
       {totalPages > 1 && (
         <nav className="evelPagination">
           <div className="evelContainer evelPaginationInner">
-            {page > 1 && <Link href={`/marketing?page=${page - 1}`}>Previous</Link>}
 
-            <span>
+            <div className="evelPaginationBtn">
+              {page > 1 && (
+                <EvelButton
+                  href={`/marketing?page=${page - 1}`}
+                  variant="nav"
+                  direction="left"
+                >
+                  Previous
+                </EvelButton>
+              )}
+            </div>
+
+            <span className="evelPaginationText">
               Page {page} of {totalPages}
             </span>
 
-            {page < totalPages && <Link href={`/marketing?page=${page + 1}`}>Next</Link>}
+            <div className="evelPaginationBtn">
+              {page < totalPages && (
+                <EvelButton
+                  href={`/marketing?page=${page + 1}`}
+                  variant="nav"
+                  direction="right"
+                >
+                  Next
+                </EvelButton>
+              )}
+            </div>
+
           </div>
         </nav>
       )}

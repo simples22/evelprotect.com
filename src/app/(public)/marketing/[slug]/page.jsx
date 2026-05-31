@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
-import Link from "next/link";
 import MarketingVideoCarousel from "@/components/publics/marketing/MarketingVideoCarousel";
-import MarketingHero from "@/components/publics/company/MarketingHero";
+import EvelButton from "@/components/publics/ui/EvelButton";
 
 async function getVideo(slug) {
   return prisma.marketingVideo.findUnique({
@@ -30,6 +29,10 @@ export default async function MarketingSlugPage({ params }) {
         <div className="evelContainer">
           <h1>Video not found.</h1>
           <p>This marketing video is unavailable.</p>
+
+          <EvelButton href="/marketing" variant="primary">
+            Back to Marketing
+          </EvelButton>
         </div>
       </main>
     );
@@ -37,9 +40,11 @@ export default async function MarketingSlugPage({ params }) {
 
   const related = await getRelated(item.id);
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const videoUrl = `${siteUrl}/marketing/${item.slug}`;
+
   return (
     <main className="marketingVideoPremium">
-      <MarketingHero />
       <section className="marketingVideoPremiumHero">
         <video
           src={item.videoUrl}
@@ -53,7 +58,14 @@ export default async function MarketingSlugPage({ params }) {
         <div className="marketingVideoPremiumOverlay" />
 
         <div className="evelContainer marketingVideoPremiumContent">
-          <Link href="/marketing">← Back to marketing</Link>
+          <EvelButton
+            href="/marketing"
+            variant="secondary"
+            direction="left"
+            align="left"
+          >
+            Back to Marketing
+          </EvelButton>
 
           <span>{item.productName || item.category || "Evel Protect™"}</span>
 
@@ -66,7 +78,10 @@ export default async function MarketingSlugPage({ params }) {
       <section className="marketingVideoStickyBar">
         <div className="evelContainer">
           <p>Discover more about this product campaign.</p>
-          <Link href="/shop">Shop products →</Link>
+
+          <EvelButton href="/shop" variant="primary" align="right">
+            Shop Products
+          </EvelButton>
         </div>
       </section>
 
@@ -75,28 +90,38 @@ export default async function MarketingSlugPage({ params }) {
           <h2>Marketing resources</h2>
 
           <div className="marketingVideoShare">
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/marketing/${item.slug}`}
+            <EvelButton
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                videoUrl
+              )}`}
               target="_blank"
+              variant="secondary"
+              align="left"
             >
               Share on Facebook
-            </a>
+            </EvelButton>
 
-            <a
-              href={`https://www.linkedin.com/shareArticle?mini=true&url=${process.env.NEXT_PUBLIC_SITE_URL}/marketing/${item.slug}`}
+            <EvelButton
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+                videoUrl
+              )}`}
               target="_blank"
+              variant="secondary"
+              align="left"
             >
               Share on LinkedIn
-            </a>
+            </EvelButton>
           </div>
         </div>
       </section>
 
-      <MarketingVideoCarousel
-        videos={related}
-        title="Related campaigns"
-        subtitle="Explore more Evel Protect™ promotional product videos."
-      />
+      {related.length > 0 && (
+        <MarketingVideoCarousel
+          videos={related}
+          title="Related campaigns"
+          subtitle="Explore more Evel Protect™ promotional product videos."
+        />
+      )}
     </main>
   );
 }

@@ -74,7 +74,7 @@ export default function NewsletterSignup({
 
       <div className="evelContainer newsletterSignupInner">
         <div className="newsletterSignupContent">
-          <h2>Sign up to sevel and receive exclusive offers and updates.</h2>
+          <h2>Sign up to our newsletter.</h2>
 
           <p>
             Be the first to know about product updates, promotional offers,

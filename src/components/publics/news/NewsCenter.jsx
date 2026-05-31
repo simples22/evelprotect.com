@@ -12,16 +12,12 @@ import EvelSearchBar from "@/components/publics/ui/EvelSearchBar";
 const initialFilters = {
   page: 1,
   limit: 6,
-
   search: "",
-
   sort: "latest",
-
   category: "all",
   type: [],
   topic: [],
   period: "",
-
   from: "",
   to: "",
 };
@@ -50,7 +46,6 @@ export default function NewsCenter() {
           { label: "Most viewed", value: "views" },
         ],
       },
-
       {
         key: "category",
         label: "Category",
@@ -66,7 +61,6 @@ export default function NewsCenter() {
           { label: "Operations", value: "Operations" },
         ],
       },
-
       {
         key: "topics",
         label: "Topics",
@@ -83,7 +77,6 @@ export default function NewsCenter() {
           { label: "Global", value: "Global" },
         ],
       },
-
       {
         key: "period",
         label: "Period",
@@ -103,21 +96,14 @@ export default function NewsCenter() {
       sort: filters.sort,
     });
 
-    if (filters.search) {
-      params.set("search", filters.search);
-    }
+    if (filters.search) params.set("search", filters.search);
 
     if (filters.category !== "all") {
       params.set("category", filters.category);
     }
 
-    if (filters.from) {
-      params.set("from", `${filters.from}-01`);
-    }
-
-    if (filters.to) {
-      params.set("to", `${filters.to}-31`);
-    }
+    if (filters.from) params.set("from", `${filters.from}-01`);
+    if (filters.to) params.set("to", `${filters.to}-31`);
 
     if (filters.topic.length) {
       params.set("topics", filters.topic.join(","));
@@ -126,33 +112,41 @@ export default function NewsCenter() {
     return params.toString();
   }, [filters]);
 
-  useEffect(() => {
-    async function loadNews() {
-      setLoading(true);
+    useEffect(() => {
+      async function loadNews() {
+        setLoading(true);
 
-      try {
-        const res = await fetch(`/api/public/news?${queryString}`, {
-          cache: "no-store",
-        });
-
-        const json = await res.json();
-
-        if (json.success) {
-          setData({
-            items: json.items || [],
-            totalPages: json.totalPages || 1,
-            total: json.total || 0,
+        try {
+          const res = await fetch(`/api/public/news?${queryString}`, {
+            cache: "no-store",
           });
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
 
-    loadNews();
-  }, [queryString]);
+          const json = await res.json();
+
+          if (json.success) {
+            const total = Number(json.total || 0);
+            const totalPages = Number(
+              json.totalPages || Math.ceil(total / initialFilters.limit) || 1
+            );
+
+            setData({
+              items: json.items || [],
+              totalPages,
+              total,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      loadNews();
+    }, [queryString]);
+
+
+  const showPagination = data.total > filters.limit;
 
   return (
     <section className="newsCenterSection">
@@ -192,53 +186,53 @@ export default function NewsCenter() {
               resetValues={initialFilters}
               sections={filterSections}
               stats={[
-                {
-                  label: "Articles",
-                  value: data.total,
-                },
-                {
-                  label: "Showing",
-                  value: data.items.length,
-                },
+                { label: "Articles", value: data.total },
+                { label: "Showing", value: data.items.length },
               ]}
             />
           }
         >
           <NewsGrid items={data.items} columns="2" />
 
-          <div className="evelContentPagination">
-            <EvelButton
-              variant="nav"
-              direction="left"
-              disabled={filters.page <= 1}
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: prev.page - 1,
-                }))
-              }
-            >
-              Previous
-            </EvelButton>
+          {showPagination && (
+            <div className="evelContentPagination">
+              <div className="evelPaginationBtn">
+                <EvelButton
+                  variant="nav"
+                  direction="left"
+                  disabled={filters.page <= 1}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }))
+                  }
+                >
+                  Previous
+                </EvelButton>
+              </div>
 
-            <span>
-              Page {filters.page} of {data.totalPages}
-            </span>
+              <span className="evelPaginationText">
+                Page {filters.page} of {data.totalPages}
+              </span>
 
-            <EvelButton
-              variant="nav"
-              direction="right"
-              disabled={filters.page >= data.totalPages}
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: prev.page + 1,
-                }))
-              }
-            >
-              Next
-            </EvelButton>
-          </div>
+              <div className="evelPaginationBtn">
+                <EvelButton
+                  variant="nav"
+                  direction="right"
+                  disabled={filters.page >= data.totalPages}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      page: Math.min(data.totalPages, prev.page + 1),
+                    }))
+                  }
+                >
+                  Next
+                </EvelButton>
+              </div>
+            </div>
+          )}
         </EvelContentLayout>
       </div>
     </section>

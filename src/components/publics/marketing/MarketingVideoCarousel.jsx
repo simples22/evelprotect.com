@@ -3,13 +3,11 @@
 import { useMemo } from "react";
 
 import MarketingVideoCard from "./MarketingVideoCard";
-
 import EvelCarousel from "@/components/publics/ui/EvelCarousel";
 import EvelCarouselSlide from "@/components/publics/ui/EvelCarouselSlide";
 
 export default function MarketingVideoCarousel({
   title = "Product Videos",
-  subtitle = "Watch promotional videos from Evel Protect™ product categories.",
   videos = [],
 }) {
   const items = useMemo(() => {
@@ -20,9 +18,7 @@ export default function MarketingVideoCarousel({
 
   return (
     <EvelCarousel
-      eyebrow="Marketing"
       title={title}
-      subtitle={subtitle}
       viewAllHref="/marketing"
       className="is-video"
     >

@@ -4,9 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSliders,
-  faMagnifyingGlass,
+  faArrowRightLong,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+
+import EvelButton from "@/components/publics/ui/EvelButton";
 
 export default function EvelFilter({
   title = "Filters",
@@ -64,30 +66,39 @@ export default function EvelFilter({
     });
   }
 
-function resetFilters() {
+  function resetFilters() {
     setFilters({
-            ...resetValues,
-            page: 1,
-        });
+      ...resetValues,
+      page: 1,
+    });
 
-        setOpenMobile(false);
-        }
+    setOpenMobile(false);
+  }
 
-    function saveChoices() {
-     setOpenMobile(false);
- }
+  function saveChoices() {
+    setOpenMobile(false);
+  }
+
+  function toggleSection(key) {
+    setOpenSection((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  }
 
   function renderOptions(section, inputType = "radio") {
     return (
       <div className="evelFilterList">
-        {(section.options || []).map((option) => {
+        {(section.options || []).map((option, index) => {
+          const optionKey = `${section.key}-${option.value}-${index}`;
+
           const checked =
             inputType === "checkbox"
               ? (filters[section.filterKey] || []).includes(option.value)
               : filters[section.filterKey] === option.value;
 
           return (
-            <label className="evelFilterCheck" key={option.value}>
+            <label className="evelFilterCheck" key={optionKey}>
               <input
                 type={inputType}
                 name={section.key}
@@ -134,8 +145,8 @@ function resetFilters() {
 
         {(stats.length > 0 || activeCount > 0) && (
           <div className="evelFilterStats">
-            {stats.map((item) => (
-              <span key={`${item.label}-${item.value}`}>
+            {stats.map((item, index) => (
+              <span key={`${item.label}-${item.value}-${index}`}>
                 <strong>{item.value}</strong>
                 {item.label}
               </span>
@@ -155,15 +166,16 @@ function resetFilters() {
             <button
               type="button"
               className="evelFilterAccordionBtn"
-              onClick={() =>
-                setOpenSection((prev) => ({
-                  ...prev,
-                  [section.key]: !prev[section.key],
-                }))
-              }
+              onClick={() => toggleSection(section.key)}
             >
-              {section.label}
-              <span>{openSection[section.key] ? "−" : "+"}</span>
+              <span>{section.label}</span>
+
+              <FontAwesomeIcon
+                icon={faArrowRightLong}
+                className={`evelFilterAccordionIcon ${
+                  openSection[section.key] ? "isOpen" : ""
+                }`}
+              />
             </button>
 
             {openSection[section.key] && (
@@ -176,7 +188,7 @@ function resetFilters() {
 
                 {section.type === "search" && (
                   <div className="evelFilterSearch">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    <FontAwesomeIcon icon={faArrowRightLong} />
                     <input
                       type="search"
                       value={filters[section.filterKey] || ""}
@@ -195,7 +207,7 @@ function resetFilters() {
 
                 {section.type === "chips" && (
                   <div className="evelFilterChips">
-                    {(section.options || []).map((option) => {
+                    {(section.options || []).map((option, index) => {
                       const current = Array.isArray(filters[section.filterKey])
                         ? filters[section.filterKey]
                         : [];
@@ -205,7 +217,7 @@ function resetFilters() {
                       return (
                         <button
                           type="button"
-                          key={option.value}
+                          key={`${section.key}-${option.value}-${index}`}
                           className={selected ? "isSelected" : ""}
                           onClick={() =>
                             toggleArrayValue(section.filterKey, option.value)
@@ -226,8 +238,11 @@ function resetFilters() {
                       updateFilter(section.filterKey, e.target.value)
                     }
                   >
-                    {(section.options || []).map((option) => (
-                      <option value={option.value} key={option.value}>
+                    {(section.options || []).map((option, index) => (
+                      <option
+                        value={option.value}
+                        key={`${section.key}-${option.value}-${index}`}
+                      >
                         {option.label}
                       </option>
                     ))}
@@ -243,6 +258,7 @@ function resetFilters() {
                         updateFilter(section.filterKey, e.target.checked)
                       }
                     />
+
                     <span>{section.toggleLabel || section.label}</span>
                   </label>
                 )}
@@ -251,6 +267,7 @@ function resetFilters() {
                   <div className="evelFilterRange">
                     <label>
                       {section.inputLabel || section.label}
+
                       <input
                         type="number"
                         min={section.min}
@@ -267,23 +284,28 @@ function resetFilters() {
 
                 {section.type === "rating" && (
                   <div className="evelFilterList">
-                    {(section.options || [5, 4, 3, 2, 1]).map((rating) => (
-                      <label className="evelFilterCheck" key={rating}>
-                        <input
-                          type="radio"
-                          name={section.key}
-                          checked={
-                            String(filters[section.filterKey]) ===
-                            String(rating)
-                          }
-                          onChange={() =>
-                            updateFilter(section.filterKey, String(rating))
-                          }
-                        />
+                    {(section.options || [5, 4, 3, 2, 1]).map(
+                      (rating, index) => (
+                        <label
+                          className="evelFilterCheck"
+                          key={`${section.key}-${rating}-${index}`}
+                        >
+                          <input
+                            type="radio"
+                            name={section.key}
+                            checked={
+                              String(filters[section.filterKey]) ===
+                              String(rating)
+                            }
+                            onChange={() =>
+                              updateFilter(section.filterKey, String(rating))
+                            }
+                          />
 
-                        <span>{"★".repeat(rating)} & up</span>
-                      </label>
-                    ))}
+                          <span>{"★".repeat(rating)} & up</span>
+                        </label>
+                      )
+                    )}
                   </div>
                 )}
 
@@ -291,6 +313,7 @@ function resetFilters() {
                   <div className="evelFilterRange">
                     <label>
                       {section.minLabel || "Min"}
+
                       <input
                         type="number"
                         min={section.min}
@@ -305,6 +328,7 @@ function resetFilters() {
 
                     <label>
                       {section.maxLabel || "Max"}
+
                       <input
                         type="number"
                         min={section.min}
@@ -323,6 +347,7 @@ function resetFilters() {
                   <div className="evelFilterRange">
                     <label>
                       {section.fromLabel || "From"}
+
                       <input
                         type={section.inputType || "month"}
                         value={filters[section.fromKey] || ""}
@@ -334,6 +359,7 @@ function resetFilters() {
 
                     <label>
                       {section.toLabel || "To"}
+
                       <input
                         type={section.inputType || "month"}
                         value={filters[section.toKey] || ""}
@@ -350,22 +376,19 @@ function resetFilters() {
         ))}
 
         <div className="evelFilterActions">
-            <button
-                type="button"
-                className="evelSaveFilterBtn"
-                onClick={saveChoices}
-            >
-                Save choices
-            </button>
+          <EvelButton variant="primary" onClick={saveChoices} align="center">
+            Save Choices
+          </EvelButton>
 
-            <button
-                type="button"
-                className="evelResetFilterBtn"
-                onClick={resetFilters}
-            >
-                Reset filters
-            </button>
-            </div>
+          <EvelButton
+            variant="outline"
+            onClick={resetFilters}
+            align="center"
+            showArrow={false}
+          >
+            Reset Filters
+          </EvelButton>
+        </div>
       </aside>
 
       {openMobile && (

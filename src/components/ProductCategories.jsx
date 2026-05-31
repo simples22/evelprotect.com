@@ -11,7 +11,7 @@ const categories = [
   },
 
   {
-    title: "Face",
+    title: "Face Care",
 
     description:
       "Developing skincare and facial care products focused on comfort, softness, and daily routines.",
@@ -20,7 +20,7 @@ const categories = [
   },
 
   {
-    title: "Body",
+    title: "Body Care",
 
     description:
       "Body care essentials prepared for hydration, freshness, wellness, and personal care experiences.",
@@ -29,7 +29,7 @@ const categories = [
   },
 
   {
-    title: "Hair",
+    title: "Hair Care",
 
     description:
       "Hair care categories created to support healthy routines, softness, freshness, and modern grooming.",
