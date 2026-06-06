@@ -82,6 +82,8 @@ export default function HeroCompany({
           </div>
         )}
       </div>
+      <div className="heroOverlay">
+  </div>
     </section>
   );
 }

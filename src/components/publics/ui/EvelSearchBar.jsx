@@ -20,19 +20,22 @@ export default function EvelSearchBar({
 
       <div className="evelSearchBarBox">
         <input
+          className="evelSearchBarInput"
+          type="search"
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
           placeholder={placeholder}
         />
 
         <button
+          className="evelSearchBarButton"
           type="button"
-          onClick={() => (value ? onClear?.() : null)}
+          onClick={() => value && onClear?.()}
           aria-label={value ? "Clear search" : "Search"}
         >
           <FontAwesomeIcon
             icon={value ? faXmark : faArrowRightLong}
-            />
+          />
         </button>
       </div>
     </div>

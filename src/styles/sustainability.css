@@ -1,0 +1,97 @@
+/* =========================================
+   SUSTAINABILITY GRID
+========================================= */
+
+.evelSustainabilitySection{
+  padding:var(--section-y) 0;
+}
+
+.evelSustainabilityGrid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0,1fr));
+
+  gap:1.4em;
+}
+
+
+
+/* =========================
+   SUSTAINABILITY CARDS
+========================= */
+
+.evelSustainabilityCards{
+  width:100%;
+  padding:var(--section-y) 0;
+  background:transparent;
+}
+
+.evelSustainabilityCardsHead{
+  width:100%;
+  max-width:46em;
+  margin-bottom:var(--space-xl);
+}
+
+.evelSustainabilityCardsHead span{
+  display:inline-block;
+  margin-bottom:var(--space-sm);
+  color:var(--evel-blue-dark);
+  font-size:var(--text-sm);
+  font-weight:var(--font-weight-btn);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.evelSustainabilityCardsHead h2{
+  color:var(--evel-blue-dark);
+  font-size:var(--text-xl);
+  line-height:var(--lh-normal);
+}
+
+.evelSustainabilityCardsHead p{
+  margin-top:var(--space-md);
+  color:var(--text-muted);
+  font-size:var(--text-md);
+  line-height:var(--lh-normal);
+}
+
+/* GRID */
+
+.evelSustainabilityCardsGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1em;
+}
+
+
+
+/* TABLET */
+
+@media(max-width:1024px){
+
+  .evelSustainabilityCardsGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .evelSustainabilityCards{
+    padding:var(--section-y-mobile) 0;
+  }
+
+  .evelSustainabilityCardsHead{
+    margin-bottom:var(--space-lg);
+  }
+
+  .evelSustainabilityCardsHead h2{
+    font-size:var(--text-xl);
+  }
+
+  .evelSustainabilityCardsGrid{
+    grid-template-columns:1fr;
+    gap:1.1em;
+  }
+}
+

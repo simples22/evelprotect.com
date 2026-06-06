@@ -1,19 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import PBImage from "@/components/PBImage";
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EvelButton from "@/components/publics/ui/EvelButton";
 
 export default function NewsletterSignup({
-  id = "newsletter-signup",
-  image = "/images/newsletter/newsletter.jpg",
+  id = "newsletter",
   source = "public-newsletter-form",
 }) {
   const [email, setEmail] = useState("");
   const [accepted, setAccepted] = useState(false);
-  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [modal, setModal] = useState({
+    open: false,
+    type: "",
+    message: "",
+  });
+
+  function openModal(type, message) {
+    setModal({
+      open: true,
+      type,
+      message,
+    });
+  }
+
+  function closeModal() {
+    setModal({
+      open: false,
+      type: "",
+      message: "",
+    });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -21,12 +39,14 @@ export default function NewsletterSignup({
     if (loading) return;
 
     if (!accepted) {
-      setStatus("Please confirm that you agree before signing up.");
+      openModal(
+        "error",
+        "Please confirm that you agree before signing up."
+      );
       return;
     }
 
     setLoading(true);
-    setStatus("");
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
@@ -49,15 +69,20 @@ export default function NewsletterSignup({
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setStatus(data.message || "Unable to subscribe. Please try again.");
+        openModal(
+          "error",
+          data.message || "Unable to subscribe. Please try again."
+        );
         return;
       }
 
       setEmail("");
       setAccepted(false);
-      setStatus("Thank you. You are now subscribed.");
+
+      openModal("success", "Thank you. You are now subscribed.");
     } catch (error) {
-      setStatus(
+      openModal(
+        "error",
         error.name === "AbortError"
           ? "Request timeout. Please try again."
           : "Network error. Please try again."
@@ -70,8 +95,6 @@ export default function NewsletterSignup({
 
   return (
     <section className="newsletterSignup" id={id}>
-      <div id="newsletter" />
-
       <div className="evelContainer newsletterSignupInner">
         <div className="newsletterSignupContent">
           <h2>Sign up to our newsletter.</h2>
@@ -82,6 +105,7 @@ export default function NewsletterSignup({
           </p>
 
           <form className="newsletterSignupForm" onSubmit={handleSubmit}>
+            <div className="newsletterSignupRow">
             <input
               type="email"
               value={email}
@@ -89,6 +113,18 @@ export default function NewsletterSignup({
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+
+          <div className="newsletterSubmitAction">
+            <EvelButton
+                  type="submit"
+                  variant="primary"
+                  className="newsletterSubmitBtn"
+                  disabled={loading || !accepted}
+                >
+                  {loading ? "Please Wait..." : "Sign Up"}
+                </EvelButton>
+            </div>
+            </div>
 
             <label className="newsletterConsent">
               <input
@@ -106,28 +142,41 @@ export default function NewsletterSignup({
                 of age and understand that I can unsubscribe at any time.
               </span>
             </label>
-
-            <button type="submit" disabled={loading || !accepted}>
-              {loading ? "PLEASE WAIT..." : "SIGN ME UP"}
-              <span className="evelBtnArrow">
-                <FontAwesomeIcon icon={faArrowRightLong} />
-              </span>
-            </button>
           </form>
-
-          {status && <span className="newsletterSignupStatus">{status}</span>}
-        </div>
-
-        <div className="newsletterSignupMedia">
-          <PBImage
-            src={image}
-            alt="Newsletter signup"
-            fill
-            sizes="(max-width: 768px) 100vw, 42vw"
-            className="newsletterSignupImg"
-          />
         </div>
       </div>
+
+      {modal.open && (
+        <div
+          className="newsletterConfirmOverlay"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="newsletterConfirmBox">
+            <span>{modal.type === "success" ? "Success" : "Notice"}</span>
+
+            <h3>
+              {modal.type === "success"
+                ? "Subscription Confirmed"
+                : "Action Required"}
+            </h3>
+
+            <p>{modal.message}</p>
+
+            <div className="newsletterModalAction">
+              <EvelButton
+                type="button"
+                variant="primary"
+                className="newsletterModalBtn"
+                align="center"
+                onClick={closeModal}
+              >
+                Continue
+              </EvelButton>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

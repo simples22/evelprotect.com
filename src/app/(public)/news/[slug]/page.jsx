@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
+
 import prisma from "@/lib/prisma";
-import PBImage from "@/components/PBImage";
+
+import EvelSlugPage from "@/components/publics/ui/EvelSlugPage";
+import EvelCard from "@/components/publics/ui/EvelCard";
 import NewsletterSignup from "@/components/publics/NewsLetter/NewsletterSignup";
 
 function paragraphs(text = "", max = 99) {
@@ -13,6 +16,7 @@ function paragraphs(text = "", max = 99) {
 
 function formatDate(date) {
   if (!date) return "";
+
   return new Date(date).toLocaleDateString("en-US");
 }
 
@@ -27,6 +31,26 @@ async function getArticle(slug) {
   } catch (error) {
     console.error("News detail query failed:", error);
     return null;
+  }
+}
+
+async function getRelatedNews(slug) {
+  try {
+    return await prisma.newsArticle.findMany({
+      where: {
+        isPublished: true,
+        NOT: {
+          slug,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 6,
+    });
+  } catch (error) {
+    console.error("Related news query failed:", error);
+    return [];
   }
 }
 
@@ -46,146 +70,99 @@ export default async function NewsDetailPage({ params }) {
   const { slug } = await params;
   const article = await getArticle(slug);
 
-  if (!article) notFound();
+  if (!article) {
+    notFound();
+  }
+
+  const relatedNews = await getRelatedNews(slug);
+
+  const dateLabel = formatDate(
+    article.publishedAt || article.createdAt
+  );
 
   return (
-    <main className="newsReadPage">
-      <section className="newsReadTop">
-        <div className="evelContainer">
-          <nav className="companyHeroBreadcrumb" aria-label="Breadcrumb">
-            <ol>
-              <li>
-                <a href="/">Home</a>
-                <span className="companyHeroSeparator">/</span>
-              </li>
-
-              <li>
-                <a href="/news">News</a>
-                <span className="companyHeroSeparator">/</span>
-              </li>
-
-              <li>
-                <span aria-current="page">{article.title}</span>
-              </li>
-            </ol>
-          </nav>
-        </div>
-
-        <div className="evelContainer newsReadHero">
-          <div className="newsReadMedia">
-            {article.imageUrl && (
-              <PBImage
-                src={article.imageUrl}
-                alt={article.title}
-                fill
-                priority
-                sizes="(max-width:768px) 100vw, 48vw"
-                className="newsReadImg"
-              />
-            )}
-          </div>
-
-          <div className="newsReadIntro">
-            <h1>{article.title}</h1>
-
-            <span>
-              Published: {formatDate(article.publishedAt || article.createdAt)}
-            </span>
-
-            {article.excerpt && <p>{article.excerpt}</p>}
-          </div>
-        </div>
-      </section>
-
-      <section className="newsReadBody">
-        <div className="evelContainer newsReadBodyInner">
-          {article.introduction && (
-            <section className="newsReadBlock">
-              <h2>{article.introTitle || "Introduction"}</h2>
-              {paragraphs(article.introduction, 3).map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </section>
-          )}
-
-          {article.body && (
-            <section className="newsReadBlock">
-              <h2>Details</h2>
-              {paragraphs(article.body).map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </section>
-          )}
-
-          {(article.authorTitle ||
-            article.authorBio ||
-            article.authorImageUrl) && (
-            <section className="newsReadAuthor">
-              {article.authorImageUrl && (
-                <div className="newsReadAuthorImgWrap">
-                  <PBImage
-                    src={article.authorImageUrl}
-                    alt={article.authorTitle || "Declaration image"}
-                    fill
-                    sizes="220px"
-                    className="newsReadAuthorImg"
+    <>
+      <EvelSlugPage
+        eyebrow={article.category || "Company News"}
+        title={article.title}
+        subtitle={article.excerpt}
+        image={article.imageUrl}
+        imageAlt={article.title}
+        backHref="/news"
+        backLabel="Back to news"
+        sections={[
+          {
+            eyebrow: dateLabel ? `Published ${dateLabel}` : "News",
+            title: article.introTitle || "Introduction",
+            text: paragraphs(article.introduction, 3).join("\n"),
+          },
+          {
+            eyebrow: "Details",
+            title: "Details",
+            text: paragraphs(article.body).join("\n"),
+          },
+          {
+            eyebrow: "Declaration",
+            title: article.authorTitle,
+            text: [
+              article.authorFunction || "",
+              article.authorCompany || "",
+              article.authorBio || "",
+            ]
+              .filter(Boolean)
+              .join("\n"),
+          },
+          {
+            eyebrow: "Question & Approach",
+            title: article.approachTitle || "Question & Approach",
+            text: paragraphs(article.approachBody).join("\n"),
+          },
+          {
+            eyebrow: "Conclusion",
+            title: article.conclusionTitle || "Conclusion",
+            text: paragraphs(article.conclusionBody).join("\n"),
+          },
+        ].filter((section) => section.title || section.text)}
+        links={
+          article.sourceUrl
+            ? [
+                {
+                  title: article.sourceLabel || "Source",
+                  url: article.sourceUrl,
+                },
+              ]
+            : []
+        }
+        relatedTitle="Related news"
+        related={
+          relatedNews.length ? (
+            <div className="evelSlugRelatedTrack">
+              {relatedNews.map((item) => (
+                <div
+                  className="evelSlugRelatedSlide"
+                  key={item.id}
+                >
+                  <EvelCard
+                    type="news"
+                    title={item.title}
+                    excerpt={item.excerpt}
+                    image={item.imageUrl}
+                    href={`/news/${item.slug}`}
+                    category={item.category || "Company"}
+                    date={formatDate(
+                      item.publishedAt || item.createdAt
+                    )}
+                    cta="Read news"
+                    size="md"
                   />
                 </div>
-              )}
-
-              <div className="newsReadAuthorContent">
-                {article.authorTitle && <h2>{article.authorTitle}</h2>}
-
-                {(article.authorFunction || article.authorCompany) && (
-                  <strong>
-                    {article.authorFunction}
-                    {article.authorCompany
-                      ? ` · ${article.authorCompany}`
-                      : ""}
-                  </strong>
-                )}
-
-                {paragraphs(article.authorBio, 2).map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {article.approachBody && (
-            <section className="newsReadBlock">
-              <h2>{article.approachTitle || "Question & Approach"}</h2>
-
-              {paragraphs(article.approachBody).map((p, i) => (
-                <p key={i}>{p}</p>
               ))}
-
-              {article.sourceUrl && (
-                <a
-                  href={article.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="newsReadSource"
-                >
-                  Source: {article.sourceLabel || article.sourceUrl}
-                </a>
-              )}
-            </section>
-          )}
-
-          {article.conclusionBody && (
-            <section className="newsReadBlock">
-              <h2>{article.conclusionTitle || "Conclusion"}</h2>
-
-              {paragraphs(article.conclusionBody).map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </section>
-          )}
-        </div>
-      </section>
+            </div>
+          ) : null
+        }
+      />
 
       <NewsletterSignup />
-    </main>
+    </>
   );
 }

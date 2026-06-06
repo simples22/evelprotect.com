@@ -160,19 +160,25 @@ export default function Footer() {
 
           <Link href="/contact" className="evelFooterContactBtn">
             <span>Contact Us</span>
-            <FontAwesomeIcon icon={faArrowRightLong} />
+                
+                  <FontAwesomeIcon icon={faArrowRightLong} />
+                
           </Link>
         </div>
 
         <div className="evelFooterPrivacyChoices">
              <Link href="/consumer-data-policy">
             <span>Consumer Data Policy</span>
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                <span className="evelExternalArrow">
+                  <FontAwesomeIcon icon={faArrowRightLong} />
+                </span>
           </Link>
 
           <Link href="/privacy-choices">
             <span>Your Privacy Choices Access</span>
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                <span className="evelExternalArrow">
+                  <FontAwesomeIcon icon={faArrowRightLong} />
+                </span>
           </Link>
 
           <p>
@@ -191,13 +197,17 @@ export default function Footer() {
 
           <div className="evelFooterBottomLinks">
             <Link href="/privacy-policy">
-              <span>Privacy</span>
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+              <span>Privacy</span>                
+              <span className="evelExternalArrow">
+                  <FontAwesomeIcon icon={faArrowRightLong} />
+                </span>
             </Link>
 
             <Link href="/terms-of-use">
-              <span>Terms</span>
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+              <span>Terms</span>                
+              <span className="evelExternalArrow">
+                  <FontAwesomeIcon icon={faArrowRightLong} />
+                </span>
             </Link>
 
             <Link href="/contact">Contact</Link>

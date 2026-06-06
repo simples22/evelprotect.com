@@ -1,19 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 import EvelCard from "@/components/publics/ui/EvelCard";
 import EvelOverlay from "@/components/publics/ui/EvelOverlay";
+import EvelButton from "@/components/publics/ui/EvelButton";
+import EvelSkeletonCard from "@/components/publics/ui/EvelSkeletonCard";
 
-function productSize(product) {
+function productSize(product = {}) {
   if (!product.sizeValue) return "—";
 
   return `${product.sizeValue}${product.sizeUnit || ""}`;
 }
 
-export default function ProductCard({ product }) {
+export default function ProductCard({
+  product = {},
+  loading = false,
+}) {
   const [openInfo, setOpenInfo] = useState(false);
+
+  if (loading || !product?.slug) {
+    return (
+      <EvelSkeletonCard
+        lines={4}
+        showMedia
+        showMeta
+        showButton={false}
+      />
+    );
+  }
 
   async function trackClick() {
     try {
@@ -42,17 +57,16 @@ export default function ProductCard({ product }) {
         size="md"
         showCta={false}
         onAction={trackClick}
-        onMediaClick={trackClick}
       >
         <div className="evelProductSimpleRow">
           <div className="evelProductPriceRow">
             <strong>
-              {product.currency} {product.price}
+              {product.currency || "USD"} {product.price || "0.00"}
             </strong>
 
             {product.compareAtPrice && (
               <span>
-                {product.currency} {product.compareAtPrice}
+                {product.currency || "USD"} {product.compareAtPrice}
               </span>
             )}
           </div>
@@ -78,30 +92,27 @@ export default function ProductCard({ product }) {
         <div className="evelProductOverlayContent">
           <div className="evelProductOverlayPrice">
             <strong>
-              {product.currency} {product.price}
+              {product.currency || "USD"} {product.price || "0.00"}
             </strong>
 
             {product.compareAtPrice && (
               <span>
-                {product.currency} {product.compareAtPrice}
+                {product.currency || "USD"} {product.compareAtPrice}
               </span>
             )}
           </div>
 
           <div className="evelProductOverlayInfo">
             <p>
-              <strong>Category:</strong>{" "}
-              {product.category || "—"}
+              <strong>Category:</strong> {product.category || "—"}
             </p>
 
             <p>
-              <strong>Size:</strong>{" "}
-              {productSize(product)}
+              <strong>Size:</strong> {productSize(product)}
             </p>
 
             <p>
-              <strong>Pack:</strong>{" "}
-              {product.packSize || 1}
+              <strong>Pack:</strong> {product.packSize || 1}
             </p>
 
             {product.rating && (
@@ -114,7 +125,7 @@ export default function ProductCard({ product }) {
             {product.pricePerBottle && (
               <p>
                 <strong>Per bottle:</strong>{" "}
-                {product.currency} {product.pricePerBottle}
+                {product.currency || "USD"} {product.pricePerBottle}
               </p>
             )}
 
@@ -126,13 +137,14 @@ export default function ProductCard({ product }) {
             )}
           </div>
 
-          <Link
+          <EvelButton
             href={`/shop/${product.slug}`}
-            className="evelProductOverlayLink"
+            variant="primary"
+            full
             onClick={trackClick}
           >
-            View product →
-          </Link>
+            View Product
+          </EvelButton>
         </div>
       </EvelOverlay>
     </>

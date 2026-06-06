@@ -3,11 +3,12 @@ import prisma from "@/lib/prisma";
 import EvelInfoSwitcher from "@/components/EvelInfoSwitcher";
 import HomeHero from "@/components/Homehero";
 import ProductCategories from "@/components/ProductCategories";
-import NewsletterSignup from "@/components/publics/NewsLetter/NewsletterSignup";
+
+import ProductCarousel from "@/components/publics/products/ProductCarousel";
 import NewsCarousel from "@/components/publics/news/NewsCarousel";
 import MarketingVideoCarousel from "@/components/publics/marketing/MarketingVideoCarousel";
 import BusinessOverview from "@/components/publics/business/BusinessOverview";
-import SustainabilityCards from "@/components/publics/sustainability/SustainabilityCards";
+import NewsletterSignup from "@/components/publics/NewsLetter/NewsletterSignup";
 
 async function safeQuery(query, fallback = []) {
   try {
@@ -21,14 +22,16 @@ async function safeQuery(query, fallback = []) {
 async function getTopProducts() {
   return safeQuery(() =>
     prisma.product.findMany({
-      where: { isPublished: true },
+      where: {
+        isPublished: true,
+      },
       orderBy: [
+        { isFeatured: "desc" },
         { clickCount: "desc" },
         { viewCount: "desc" },
-        { isFeatured: "desc" },
         { createdAt: "desc" },
       ],
-      take: 6,
+      take: 12,
     })
   );
 }
@@ -36,9 +39,14 @@ async function getTopProducts() {
 async function getMarketingVideos() {
   return safeQuery(() =>
     prisma.marketingVideo.findMany({
-      where: { isPublished: true },
-      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-      take: 4,
+      where: {
+        isPublished: true,
+      },
+      orderBy: [
+        { isFeatured: "desc" },
+        { createdAt: "desc" },
+      ],
+      take: 8,
     })
   );
 }
@@ -46,8 +54,12 @@ async function getMarketingVideos() {
 async function getNews() {
   return safeQuery(() =>
     prisma.newsArticle.findMany({
-      where: { isPublished: true },
-      orderBy: { createdAt: "desc" },
+      where: {
+        isPublished: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
       take: 10,
     })
   );
@@ -57,43 +69,53 @@ async function getBusinessOverview() {
   return safeQuery(
     () =>
       prisma.businessOverview.findFirst({
-        where: { isPublished: true },
-        orderBy: { updatedAt: "desc" },
+        where: {
+          isPublished: true,
+        },
+        orderBy: {
+          updatedAt: "desc",
+        },
       }),
     null
   );
 }
 
 export default async function HomePage() {
-  const [topProducts, news, marketingVideos, businessOverview] =
-    await Promise.all([
-      getTopProducts(),
-      getNews(),
-      getMarketingVideos(),
-      getBusinessOverview(),
-    ]);
+  const [
+    topProducts,
+    news,
+    marketingVideos,
+    businessOverview,
+  ] = await Promise.all([
+    getTopProducts(),
+    getNews(),
+    getMarketingVideos(),
+    getBusinessOverview(),
+  ]);
 
   return (
     <main>
-      <HomeHero />
+      <HomeHero news={news} />
 
+      
       <BusinessOverview data={businessOverview} />
-
+       
       <EvelInfoSwitcher />
 
       <NewsCarousel news={news} />
 
+      <NewsletterSignup />
+      
+{/*
+      <ProductCarousel products={topProducts} />
+*/}
       <ProductCategories />
 
       <MarketingVideoCarousel
         videos={marketingVideos}
-        title="Product marketing videos"
+        title="Product Marketing Videos"
         subtitle="Watch promotional videos from Evel Protect™ product categories."
       />
-
-      <SustainabilityCards />
-
-      <NewsletterSignup />
     </main>
   );
 }

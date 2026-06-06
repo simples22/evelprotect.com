@@ -1,11 +1,27 @@
 import EvelCard from "@/components/publics/ui/EvelCard";
+import EvelSkeletonCard from "@/components/publics/ui/EvelSkeletonCard";
 
 function formatDate(date) {
   if (!date) return "";
+
   return new Date(date).toLocaleDateString("en-US");
 }
 
-export default function NewsCard({ item }) {
+export default function NewsCard({
+  item,
+  loading = false,
+}) {
+  if (loading || !item) {
+    return (
+      <EvelSkeletonCard
+        lines={4}
+        showMedia
+        showMeta
+        showButton
+      />
+    );
+  }
+
   return (
     <EvelCard
       type="news"

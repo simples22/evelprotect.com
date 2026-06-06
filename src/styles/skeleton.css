@@ -1,0 +1,90 @@
+/* =========================
+   EVEL UNIVERSAL SKELETON
+========================= */
+
+.evelSkeletonCard{
+  width:100%;
+  min-width:0;
+  height:100%;
+  overflow:hidden;
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:var(--border-radius-news);
+}
+
+.evelSkeletonMedia{
+  position:relative;
+  width:100%;
+  aspect-ratio:16 / 11;
+  overflow:hidden;
+  background:var(--bg-soft);
+}
+
+.evelSkeletonCard.isHero .evelSkeletonMedia{
+  aspect-ratio:16 / 7;
+}
+
+.evelSkeletonBody{
+  padding:1.2em;
+  display:flex;
+  flex-direction:column;
+  gap:.75em;
+}
+
+.evelSkeletonLine,
+.evelSkeletonButton{
+  position:relative;
+  display:block;
+  overflow:hidden;
+  background:var(--bg-soft);
+}
+
+.evelSkeletonLine{
+  width:100%;
+  height:.85em;
+  border-radius:999px;
+}
+
+.evelSkeletonLine.is-meta,
+.evelSkeletonLine.is-small{
+  width:35%;
+  height:.7em;
+}
+
+.evelSkeletonLine.is-title{
+  width:85%;
+  height:1.3em;
+}
+
+.evelSkeletonLine.is-short{
+  width:60%;
+}
+
+.evelSkeletonButton{
+  width:8em;
+  height:2.4em;
+  margin-top:.5em;
+  border-radius:999px;
+}
+
+.evelSkeletonMedia::after,
+.evelSkeletonLine::after,
+.evelSkeletonButton::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  transform:translateX(-100%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.9),
+    transparent
+  );
+  animation:evelSkeletonShine 1.25s linear infinite;
+}
+
+@keyframes evelSkeletonShine{
+  to{
+    transform:translateX(100%);
+  }
+}

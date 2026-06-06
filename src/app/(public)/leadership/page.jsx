@@ -29,7 +29,7 @@ export default async function LeadershipPage() {
 
   return (
     <main>
-<LeadershipHero />
+        <LeadershipHero />
 
       <section className="leadershipHero">
         <div className="evelContainer leadershipHeroGrid">
@@ -54,7 +54,9 @@ export default async function LeadershipPage() {
           </div>
         </div>
       </section>
-      <LeadershipGrid members={members} />
+      <LeadershipGrid
+          members={members}
+        />
     </main>
   );
 }

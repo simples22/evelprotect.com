@@ -7,7 +7,7 @@ export default function EvelLogo({
   return (
     <Link href={href} className={`evelLogo ${className}`}>
       <span className="evelLogoTop">
-        <span className="evelLogoText">Evel</span>
+        <span className="evelLogoText">EVEL PROTECT</span>
         <span className="evelLogoTrademark">™</span>
       </span>
 

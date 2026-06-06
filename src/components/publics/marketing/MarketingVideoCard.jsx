@@ -1,4 +1,5 @@
 import EvelCard from "@/components/publics/ui/EvelCard";
+import EvelSkeletonCard from "@/components/publics/ui/EvelSkeletonCard";
 
 function formatDate(date) {
   if (!date) return "";
@@ -10,8 +11,20 @@ function formatDate(date) {
   });
 }
 
-export default function MarketingVideoCard({ item }) {
-  if (!item?.slug) return null;
+export default function MarketingVideoCard({
+  item,
+  loading = false,
+}) {
+  if (loading || !item?.slug) {
+    return (
+      <EvelSkeletonCard
+        lines={4}
+        showMedia
+        showMeta
+        showButton
+      />
+    );
+  }
 
   return (
     <EvelCard
@@ -22,7 +35,9 @@ export default function MarketingVideoCard({ item }) {
       video={item.videoUrl}
       href={`/marketing/${item.slug}`}
       category={item.productName || item.category}
-      date={formatDate(item.publishedAt || item.createdAt)}
+      date={formatDate(
+        item.publishedAt || item.createdAt
+      )}
       badge={item.isFeatured ? "Featured" : ""}
       cta="Watch campaign"
       featured={item.isFeatured}

@@ -1,74 +1,61 @@
+import Link from "next/link";
 import PBImage from "./PBImage";
 
-const categories = [
+const cards = [
   {
-    title: "Cosmetics",
-
+    title: "Careers",
     description:
-      "Modern freshness and beauty products designed for everyday confidence and lifestyle care.",
-
-    image: "/images/products/freshness-cosmetics.jpg",
+      "Explore future opportunities, company culture, and professional paths inside Evel Protect™.",
+    image: "/images/careers/evel-careers.jpg",
+    href: "/careers",
+    cta: "View all careers",
   },
-
   {
-    title: "Face Care",
-
+    title: "Sustainability",
     description:
-      "Developing skincare and facial care products focused on comfort, softness, and daily routines.",
-
-    image: "/images/products/skincare.jpg",
-  },
-
-  {
-    title: "Body Care",
-
-    description:
-      "Body care essentials prepared for hydration, freshness, wellness, and personal care experiences.",
-
-    image: "/images/products/body-care.jpg",
-  },
-
-  {
-    title: "Hair Care",
-
-    description:
-      "Hair care categories created to support healthy routines, softness, freshness, and modern grooming.",
-
-    image: "/images/products/hair-care.jpg",
+      "Read our featured sustainability direction, product responsibility updates, and long-term initiatives.",
+    image: "/images/sustainability/featured-sustainability.jpg",
+    href: "/sustainability",
+    cta: "Read more information",
   },
 ];
 
 export default function ProductCategories() {
   return (
-    <section className="evelProductCategories" id="products">
+    <section className="evelProductCategories" id="company-resources">
       <div className="evelContainer">
         <div className="evelProductCategoriesHead">
-          <h2>Product Categories</h2>
-          <p>
-            Explore our developing cosmetics, face care, body care, and hair
-            care product directions.
-          </p>
+          <h2>Explore More</h2>
         </div>
 
         <div className="evelProductCategoriesGrid">
-          {categories.map((category) => (
-            <article className="evelProductCategoryCard" key={category.title}>
+          {cards.map((card) => (
+            <Link
+              href={card.href}
+              className="evelProductCategoryCard"
+              key={card.title}
+            >
               <div className="evelProductCategoryMedia">
                 <PBImage
-                  src={category.image}
-                  alt={category.title}
+                  src={card.image}
+                  alt={card.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, 25vw"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="evelProductCategoryImg"
                 />
-              </div>
-
-                <div className="evelProductCategoryBody">
-                  <h3>{category.title}</h3>
-
-                  <p>{category.description}</p>
+                <div className="evelProductCategoryTitle">
+                  <h3>{card.title}</h3>
                 </div>
-            </article>
+
+                <div className="evelProductCategoryOverlay">
+                  <div className="evelProductCategoryBody">
+                    <h3>{card.title}</h3>
+                    <p>{card.description}</p>
+                    <span>{card.cta} →</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

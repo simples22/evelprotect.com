@@ -1,4 +1,10 @@
 import "@/styles/globals.css";
+import "@/styles/not-found.css";
+import "@/styles/skeleton.css";
+import "@/styles/evelslugpage.css";
+import "@/styles/leadership.css";
+import "@/styles/sustainability.css";
+
 import { inter } from "@/lib/fonts";
 
 export const metadata = {

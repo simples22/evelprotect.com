@@ -126,7 +126,7 @@ export default function EvelContactForms() {
         <div className="evelContactActions">
           <EvelButton
             type="button"
-            variant="primary"
+            variant="secondary"
             align="left"
             onClick={() => {
               setCareerOpen(false);

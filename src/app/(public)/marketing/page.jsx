@@ -52,7 +52,6 @@ export default async function MarketingPage({ searchParams }) {
       <section className="marketingVideoGridSection">
         <div className="evelContainer">
           <div className="marketingVideoGridHead">
-            <span>Evel Protect™ Videos</span>
             <h1>Product marketing videos</h1>
             <p>
               Browse promotional product videos created to support our product

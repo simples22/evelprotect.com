@@ -3,11 +3,11 @@
 import { useMemo, useState } from "react";
 
 import ProductCard from "./ProductCard";
-
 import EvelCardGrid from "@/components/publics/ui/EvelCardGrid";
 import EvelContentLayout from "@/components/publics/ui/EvelContentLayout";
 import EvelFilter from "@/components/publics/ui/EvelFilter";
 import EvelSearchBar from "@/components/publics/ui/EvelSearchBar";
+import EvelSkeletonCard from "@/components/publics/ui/EvelSkeletonCard";
 
 const initialFilters = {
   search: "",
@@ -24,6 +24,21 @@ const initialFilters = {
   page: 1,
 };
 
+const gammeOptions = [
+  { label: "All gammes", value: "all" },
+  { label: "Serative", value: "serative" },
+  { label: "Serative Plus", value: "serative-plus" },
+  { label: "Conditioner", value: "conditioner" },
+  { label: "Shampoo", value: "shampoo" },
+  { label: "Deodorants", value: "deodorant" },
+  { label: "Moisturizing", value: "moisturizing" },
+  { label: "Lotion", value: "lotion" },
+  { label: "Shower Gel", value: "gel" },
+  { label: "Body Care", value: "body-care" },
+  { label: "Hair Care", value: "hair-care" },
+  { label: "Face Wash", value: "face" },
+];
+
 function uniqueOptions(items, key, allLabel) {
   const values = [
     ...new Set(items.map((item) => item?.[key]).filter(Boolean)),
@@ -38,7 +53,14 @@ function uniqueOptions(items, key, allLabel) {
   ];
 }
 
-export default function ProductGrid({ products = [] }) {
+function normalize(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+export default function ProductGrid({
+  products = [],
+  loading = false,
+}) {
   const [filters, setFilters] = useState(initialFilters);
 
   const categoryOptions = useMemo(
@@ -46,16 +68,11 @@ export default function ProductGrid({ products = [] }) {
     [products]
   );
 
-  const gammeOptions = useMemo(
-    () => uniqueOptions(products, "gamme", "All gammes"),
-    [products]
-  );
-
   const flavorOptions = useMemo(() => {
     const values = [
       ...new Set(
         products
-          .map((item) => item.flavor || item.scent)
+          .map((item) => item?.flavor || item?.scent)
           .filter(Boolean)
       ),
     ];
@@ -95,23 +112,8 @@ export default function ProductGrid({ products = [] }) {
         label: "Gamme",
         type: "select",
         filterKey: "gamme",
-        options: [
-          { label: "All gamme", value: "all" },
-          { label: "Serative", value: "serative" },
-          { label: "Serative Plus ", value: "serative-plus" },
-          { label: "Conditioner ", value: "condiditioner" },
-          { label: "Shampoo ", value: "shampoo" },
-          { label: "Deodorants ", value: "deodorant" },
-          { label: "Benefics ", value: "moisturizing" },
-          { label: "Shower Lotions ", value: "lotion" },
-          { label: "Shower Gels", value: "Gel" },
-          { label: "Body Care", value: "body-care" },
-          { label: "Shampoo", value: "shampoo" },
-          { label: "Hair Care", value: "hair-care" },
-          { label: "Face Wash ", value: "face" },
-        ],
+        options: gammeOptions,
       },
-
       {
         key: "flavor",
         label: "Scent",
@@ -162,27 +164,26 @@ export default function ProductGrid({ products = [] }) {
         step: "0.01",
       },
     ],
-    [categoryOptions, gammeOptions, flavorOptions]
+    [categoryOptions, flavorOptions]
   );
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
-
-    const search = filters.search.trim().toLowerCase();
+    let result = Array.isArray(products) ? [...products] : [];
+    const search = normalize(filters.search);
 
     if (search) {
       result = result.filter((item) =>
         [
-          item.title,
-          item.category,
-          item.type,
-          item.gamme,
-          item.flavor,
-          item.scent,
-          item.tags,
-          item.shortDescription,
-          item.description,
-          item.sizeUnit,
+          item?.title,
+          item?.category,
+          item?.type,
+          item?.gamme,
+          item?.flavor,
+          item?.scent,
+          item?.tags,
+          item?.shortDescription,
+          item?.description,
+          item?.sizeUnit,
         ]
           .filter(Boolean)
           .join(" ")
@@ -192,30 +193,33 @@ export default function ProductGrid({ products = [] }) {
     }
 
     if (filters.category !== "all") {
-      result = result.filter((item) => item.category === filters.category);
+      result = result.filter(
+        (item) => item?.category === filters.category
+      );
     }
 
     if (filters.type !== "all") {
-      result = result.filter((item) => item.type === filters.type);
+      result = result.filter(
+        (item) => item?.type === filters.type
+      );
     }
 
     if (filters.gamme !== "all") {
       result = result.filter(
-        (item) =>
-          item.gamme?.toLowerCase() === filters.gamme.toLowerCase()
+        (item) => normalize(item?.gamme) === normalize(filters.gamme)
       );
     }
 
     if (filters.flavor !== "all") {
       result = result.filter((item) => {
-        const value = item.flavor || item.scent || "";
-        return value.toLowerCase() === filters.flavor.toLowerCase();
+        const value = item?.flavor || item?.scent || "";
+        return normalize(value) === normalize(filters.flavor);
       });
     }
 
     if (filters.size !== "all") {
       result = result.filter((item) => {
-        const sizeValue = Number(item.sizeValue || 0);
+        const sizeValue = Number(item?.sizeValue || 0);
 
         if (filters.size === "travel") return sizeValue > 0 && sizeValue <= 3;
         if (filters.size === "regular") return sizeValue > 3 && sizeValue <= 16;
@@ -226,67 +230,93 @@ export default function ProductGrid({ products = [] }) {
     }
 
     if (filters.availability === "available") {
-      result = result.filter((item) => item.isPublished);
+      result = result.filter((item) => item?.isPublished);
     }
 
     if (filters.availability === "comingSoon") {
-      result = result.filter((item) => item.isComingSoon);
+      result = result.filter((item) => item?.isComingSoon);
     }
 
     if (filters.availability === "featured") {
-      result = result.filter((item) => item.isFeatured);
+      result = result.filter((item) => item?.isFeatured);
     }
 
     if (filters.availability === "bestSeller") {
-      result = result.filter((item) => item.isBestSeller);
+      result = result.filter((item) => item?.isBestSeller);
     }
 
     if (filters.rating) {
       result = result.filter(
-        (item) => Number(item.rating || 0) >= Number(filters.rating)
+        (item) => Number(item?.rating || 0) >= Number(filters.rating)
       );
     }
 
     if (filters.minPrice) {
       result = result.filter(
-        (item) => Number(item.price) >= Number(filters.minPrice)
+        (item) => Number(item?.price || 0) >= Number(filters.minPrice)
       );
     }
 
     if (filters.maxPrice) {
       result = result.filter(
-        (item) => Number(item.price) <= Number(filters.maxPrice)
+        (item) => Number(item?.price || 0) <= Number(filters.maxPrice)
       );
     }
 
     if (filters.sort === "oldest") {
-      result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      result.sort(
+        (a, b) =>
+          new Date(a?.createdAt || 0) - new Date(b?.createdAt || 0)
+      );
     }
 
     if (filters.sort === "latest") {
-      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      result.sort(
+        (a, b) =>
+          new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0)
+      );
     }
 
     if (filters.sort === "views") {
       result.sort(
-        (a, b) => Number(b.viewCount || 0) - Number(a.viewCount || 0)
+        (a, b) => Number(b?.viewCount || 0) - Number(a?.viewCount || 0)
       );
     }
 
     if (filters.sort === "clicks") {
       result.sort(
-        (a, b) => Number(b.clickCount || 0) - Number(a.clickCount || 0)
+        (a, b) => Number(b?.clickCount || 0) - Number(a?.clickCount || 0)
       );
     }
 
     return result.slice(0, 12);
   }, [products, filters]);
 
+  if (loading) {
+    return (
+      <section className="evelShopGridSection">
+        <div className="evelContainer">
+          <EvelCardGrid className="evelShopGrid" columns="2">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <EvelSkeletonCard
+                key={`product-skeleton-${index}`}
+                lines={5}
+                showMedia
+                showMeta
+                showButton
+              />
+            ))}
+          </EvelCardGrid>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="evelShopGridSection">
       <div className="evelContainer">
         <EvelSearchBar
-          label="Search by"
+          label=""
           value={filters.search}
           placeholder="Search products, category, scent..."
           onChange={(value) =>
@@ -304,7 +334,7 @@ export default function ProductGrid({ products = [] }) {
             }))
           }
         />
-      
+
         <EvelContentLayout
           topbar={
             <h3>
@@ -326,9 +356,18 @@ export default function ProductGrid({ products = [] }) {
           }
         >
           <EvelCardGrid className="evelShopGrid" columns="2">
-            {filteredProducts.map((product) => (
-              <ProductCard product={product} key={product.id} />
-            ))}
+            {filteredProducts.length ? (
+              filteredProducts.map((product) => (
+                <ProductCard
+                  product={product}
+                  key={product.id}
+                />
+              ))
+            ) : (
+              <div className="evelContentEmpty">
+                No products match your filters.
+              </div>
+            )}
           </EvelCardGrid>
         </EvelContentLayout>
       </div>

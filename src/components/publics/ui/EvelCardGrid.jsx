@@ -1,7 +1,7 @@
 export default function EvelCardGrid({
   children,
   className = "",
-  columns = "2",
+  columns = "3",
 }) {
   return (
     <div className={`evelCardGrid is-${columns} ${className}`}>

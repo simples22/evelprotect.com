@@ -376,12 +376,12 @@ export default function EvelFilter({
         ))}
 
         <div className="evelFilterActions">
-          <EvelButton variant="primary" onClick={saveChoices} align="center">
+          <EvelButton variant="secondary" onClick={saveChoices} align="center">
             Save Choices
           </EvelButton>
 
           <EvelButton
-            variant="outline"
+            variant="secondary"
             onClick={resetFilters}
             align="center"
             showArrow={false}

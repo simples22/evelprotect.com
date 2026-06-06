@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import PBImage from "@/components/PBImage";
 import UILine from "@/components/admin/ui/UILine";
 
 function limitText(text = "", max = 130) {
@@ -44,9 +44,9 @@ export default function EvelCard({
         .filter(Boolean)
         .join(" ")}
     >
-      <Link href={href} className="evelCardLink" onClick={onAction}>
+      <Link href={href || "#"} className="evelCardLink" onClick={onAction}>
         <div className="evelCardMedia">
-          {isVideo ? (
+          {isVideo && video ? (
             <>
               <video
                 src={video}
@@ -61,11 +61,12 @@ export default function EvelCard({
               <span className="evelCardPlay">{playLabel}</span>
             </>
           ) : image ? (
-            <Image
+            <PBImage
               src={image}
               alt={title || "EVEL card image"}
               fill
               priority={priority}
+              loading={priority ? "eager" : "lazy"}
               sizes="(max-width:768px) 100vw, 33vw"
               className="evelCardImg"
             />
@@ -85,13 +86,15 @@ export default function EvelCard({
           )}
 
           {title && <h3 className="evelCardTitle">{title}</h3>}
-<UILine />
+
+          <UILine />
+
           {excerpt && <p className="evelCardText">{limitText(excerpt)}</p>}
 
           {stats?.length > 0 && (
             <div className="evelCardStats">
-              {stats.map((stat) => (
-                <span key={`${stat.label}-${stat.value}`}>
+              {stats.map((stat, index) => (
+                <span key={`${stat.label}-${stat.value}-${index}`}>
                   <strong>{stat.value}</strong>
                   {stat.label}
                 </span>
